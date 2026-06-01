@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <title>BL Фентези: Покорители Тьмы</title>
     <style>
@@ -15,11 +15,11 @@
         .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #8a2080, #c060c0); border-radius: 8px; width: 0%; transition: width 0.3s; }
         .loading-text { color: #c080c0; margin-top: 10px; font-size: 0.85em; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
-        #game { width: 100%; max-width: 500px; min-height: 620px; max-height: 620px; background: rgba(10,0,15,0.92); border: 2px solid #6a306a; border-radius: 18px; padding: 10px; box-shadow: 0 0 40px rgba(150,0,150,0.3); text-align: center; position: relative; z-index: 1; background-size: cover; background-position: center; transition: background-image 0.5s ease; overflow-y: auto; }
+        #game { width: 100%; max-width: 500px; min-height: 620px; max-height: 620px; background: rgba(10,0,15,0.92); border: 2px solid #6a306a; border-radius: 18px; padding: 10px; box-shadow: 0 0 40px rgba(150,0,150,0.3); text-align: center; position: relative; z-index: 1; background-size: cover; background-position: center; transition: background-image 0.5s ease; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         h1 { color: #c070c0; font-size: 1.2em; margin-bottom: 2px; text-shadow: 0 0 15px #a040a0; }
         .main-layout { display: flex; align-items: center; justify-content: space-between; gap: 4px; margin: 4px 0; min-height: 280px; }
         .side-icons { display: flex; flex-direction: column; gap: 6px; align-items: center; width: 65px; }
-        .circle-icon { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 2px solid #8a408a; cursor: pointer; transition: all 0.2s; box-shadow: 0 3px 8px rgba(0,0,0,0.5); background: rgba(0,0,0,0.5); position: relative; }
+        .circle-icon { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 2px solid #8a408a; cursor: pointer; transition: all 0.2s; box-shadow: 0 3px 8px rgba(0,0,0,0.5); background: #1a0a2a; position: relative; }
         .circle-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .circle-icon:hover { border-color: #b060b0; box-shadow: 0 0 20px rgba(150,0,150,0.7); transform: scale(1.1); }
         .circle-icon:active { transform: scale(0.9); }
@@ -39,7 +39,7 @@
         .gift-placeholder .icon { font-size: 3em; }
         .gift-ok-card { width: 160px; height: 160px; border-radius: 15px; border: 3px solid #c08040; margin: 8px auto; background: rgba(30,15,5,0.9); overflow: hidden; box-shadow: 0 0 20px rgba(200,150,50,0.5); }
         .gift-ok-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
-        .book-overlay, .map-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,0,10,0.95); border-radius: 18px; display: flex; flex-direction: column; align-items: center; z-index: 10; padding: 12px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .book-overlay, .map-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,0,10,0.95); border-radius: 18px; display: flex; flex-direction: column; align-items: center; z-index: 10; padding: 12px; overflow-y: scroll !important; -webkit-overflow-scrolling: touch; }
         .book-entry { background: rgba(30,10,30,0.9); border: 1px solid #6a306a; border-radius: 10px; padding: 10px; margin: 5px 0; width: 100%; max-width: 400px; text-align: left; color: #d0b0d0; font-size: 0.75em; display: flex; align-items: center; gap: 10px; }
         .book-entry.locked { opacity: 0.4; }
         .book-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 2px solid #6a306a; flex-shrink: 0; background: #1a0a1a; min-width: 60px; }
@@ -93,7 +93,7 @@
         <div id="buttons"></div>
     </div>
     <script>
-        // ========== ВСЕ КАРТИНКИ ==========
+        // ========== КАРТИНКИ С ЗАГЛУШКАМИ ==========
         const IMG = {
             guide: "https://iili.io/C3tLNXj.md.jpg", hero: "https://iili.io/C3tbYiJ.md.jpg",
             kairos: "https://iili.io/C3ekM3Q.md.jpg", zein: "https://iili.io/C3ekAa2.md.jpg", lucian: "https://iili.io/C3eODWG.md.jpg",
@@ -117,6 +117,13 @@
             bgCave: "https://iili.io/CFBVFmF.md.jpg", bgSea: "https://iili.io/CFBVuet.md.jpg",
             bgForest: "https://iili.io/CFBVNBj.md.jpg"
         };
+        // Заглушка если картинка не грузится
+        function imgFallback(el, text) {
+            el.onerror = function() {
+                this.style.display = 'none';
+                this.parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#888;font-size:0.7em;background:#1a0a2a;">' + (text || '🖼️') + '</div>';
+            };
+        }
 
         const monsterData = [
             {name:"Слизень",hp:40,atk:8,coins:8,img:IMG.slime,desc:"Слабое существо."},
@@ -207,13 +214,13 @@
 
         function mainMenu(){clearJoystick();hideEnemyBar();hidePortrait();setBg('menu');enemyHp=0;updateUI();if(!player.introDone){introScene();return;}if(checkDaily())return;
             setText('✨ Искра: «Куда, '+player.name+'?»');
-            let l='<div class="side-icons"><button class="circle-icon" onclick="showMap()"><img src="'+IMG.iconMap+'" alt=""></button><button class="circle-icon" onclick="showBook()"><img src="'+IMG.iconBook+'" alt=""></button><button class="circle-icon" onclick="startMonster()"><img src="'+IMG.iconMonster+'" alt=""></button>'+ (canFightElite()?'<button class="circle-icon" onclick="startElite()"><img src="'+IMG.iconElite+'" alt=""></button>':'<button class="circle-icon locked"><img src="'+IMG.iconElite+'" alt=""></button>')+ (canFightBoss()?'<button class="circle-icon" onclick="chooseBoss()"><img src="'+IMG.iconBoss+'" alt=""></button>':'<button class="circle-icon locked"><img src="'+IMG.iconBoss+'" alt=""></button>')+'</div>';
-            let r='<div class="side-icons"><button class="circle-icon" onclick="chooseRel()"><img src="'+IMG.iconRel+'" alt=""></button><button class="circle-icon" onclick="shop()"><img src="'+IMG.iconShop+'" alt=""></button><button class="circle-icon" onclick="openChest()"><img src="'+IMG.iconKey+'" alt=""></button>'+ (canDoEvents()?'<button class="circle-icon" onclick="startEvent()"><img src="'+IMG.iconEvent+'" alt=""></button>':'<button class="circle-icon locked"><img src="'+IMG.iconEvent+'" alt=""></button>')+'</div>';
-            let c='<div class="center-area">'+(player.favorite&&bossImages[player.favorite]?'<div class="fav-label">⭐ '+player.favorite+' ⭐</div><div class="fav-portrait-large"><img src="'+bossImages[player.favorite]+'" alt=""></div><div class="fav-btn-row"><button class="tiny-btn" onclick="setFav()">🔄</button></div>':'<div class="fav-empty">⭐<br>ПОБЕДИ БОССА</div>')+'</div>';
+            let l='<div class="side-icons"><button class="circle-icon" onclick="showMap()"><img src="'+IMG.iconMap+'" alt="" onerror="this.style.opacity=0"></button><button class="circle-icon" onclick="showBook()"><img src="'+IMG.iconBook+'" alt="" onerror="this.style.opacity=0"></button><button class="circle-icon" onclick="startMonster()"><img src="'+IMG.iconMonster+'" alt="" onerror="this.style.opacity=0"></button>'+ (canFightElite()?'<button class="circle-icon" onclick="startElite()"><img src="'+IMG.iconElite+'" alt="" onerror="this.style.opacity=0"></button>':'<button class="circle-icon locked"><img src="'+IMG.iconElite+'" alt="" onerror="this.style.opacity=0"></button>')+ (canFightBoss()?'<button class="circle-icon" onclick="chooseBoss()"><img src="'+IMG.iconBoss+'" alt="" onerror="this.style.opacity=0"></button>':'<button class="circle-icon locked"><img src="'+IMG.iconBoss+'" alt="" onerror="this.style.opacity=0"></button>')+'</div>';
+            let r='<div class="side-icons"><button class="circle-icon" onclick="chooseRel()"><img src="'+IMG.iconRel+'" alt="" onerror="this.style.opacity=0"></button><button class="circle-icon" onclick="shop()"><img src="'+IMG.iconShop+'" alt="" onerror="this.style.opacity=0"></button><button class="circle-icon" onclick="openChest()"><img src="'+IMG.iconKey+'" alt="" onerror="this.style.opacity=0"></button>'+ (canDoEvents()?'<button class="circle-icon" onclick="startEvent()"><img src="'+IMG.iconEvent+'" alt="" onerror="this.style.opacity=0"></button>':'<button class="circle-icon locked"><img src="'+IMG.iconEvent+'" alt="" onerror="this.style.opacity=0"></button>')+'</div>';
+            let c='<div class="center-area">'+(player.favorite&&bossImages[player.favorite]?'<div class="fav-label">⭐ '+player.favorite+' ⭐</div><div class="fav-portrait-large"><img src="'+bossImages[player.favorite]+'" alt="" onerror="this.style.opacity=0"></div><div class="fav-btn-row"><button class="tiny-btn" onclick="setFav()">🔄</button></div>':'<div class="fav-empty">⭐<br>ПОБЕДИ БОССА</div>')+'</div>';
             setButtonsHTML('<div class="main-layout">'+l+c+r+'</div><div class="menu-buttons"><button class="menu-btn" onclick="saveMenu()">💾</button><button class="menu-btn" onclick="loadMenu()">📂</button><button class="menu-btn" onclick="stats()">📊</button><button class="menu-btn" onclick="newGameConfirm()">🆕</button></div>');}
 
-        function showMap(){clearJoystick();let h='<div class="map-overlay"><div class="map-title">🗺️ КАРТА</div>';h+='<div class="map-section-label">Боссы (21-30)</div>';for(let i=30;i>=21;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<div class="map-section-label">Элита (11-20)</div>';for(let i=20;i>=11;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<div class="map-section-label">Монстры (1-10)</div>';for(let i=10;i>=1;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);setTimeout(()=>{let o=document.querySelector('.map-overlay');if(o)o.scrollTop=o.scrollHeight;},100);}
-        function showBook(){clearJoystick();let h='<div class="book-overlay"><div style="color:#c080c0;font-size:1em;">📖 БЕСТИАРИЙ</div>';h+='<div class="map-section-label">Монстры</div>';monsterData.forEach(m=>{let k=defeatedMonsters.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';});h+='<div class="map-section-label">Элита</div>';eliteData.forEach(m=>{let k=defeatedElites.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';});h+='<div class="map-section-label">Боссы</div>';for(let n in bossData){let m=bossData[n],k=defeatedBosses.includes(n);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?n:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
+        function showMap(){clearJoystick();let h='<div class="map-overlay"><div class="map-title">🗺️ КАРТА (листай вверх)</div>';h+='<div class="map-section-label">Боссы (21-30)</div>';for(let i=30;i>=21;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<div class="map-section-label">Элита (11-20)</div>';for(let i=20;i>=11;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<div class="map-section-label">Монстры (1-10)</div>';for(let i=10;i>=1;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;flex-shrink:0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);setTimeout(()=>{let o=document.querySelector('.map-overlay');if(o)o.scrollTop=o.scrollHeight;},100);}
+        function showBook(){clearJoystick();let h='<div class="book-overlay"><div style="color:#c080c0;font-size:1em;flex-shrink:0;">📖 БЕСТИАРИЙ</div>';h+='<div class="map-section-label">Монстры</div>';monsterData.forEach(m=>{let k=defeatedMonsters.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';});h+='<div class="map-section-label">Элита</div>';eliteData.forEach(m=>{let k=defeatedElites.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';});h+='<div class="map-section-label">Боссы</div>';for(let n in bossData){let m=bossData[n],k=defeatedBosses.includes(n);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?n:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;flex-shrink:0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
         function setFav(){let c=player.conquered;if(c.length===0)return;let b=c.map(x=>({text:x,action:()=>{player.favorite=x;mainMenu();}}));b.push({text:'Убрать',action:()=>{player.favorite=null;mainMenu();}});setText('Выбери:');setButtons(b);}
 
         // ========== СОБЫТИЯ ==========
