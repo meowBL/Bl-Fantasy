@@ -93,7 +93,7 @@
         <div id="buttons"></div>
     </div>
     <script>
-        // ========== КАРТИНКИ ==========
+        // ========== ВСЕ КАРТИНКИ ==========
         const IMG = {
             guide: "https://iili.io/C3tLNXj.md.jpg", hero: "https://iili.io/C3tbYiJ.md.jpg",
             kairos: "https://iili.io/C3ekM3Q.md.jpg", zein: "https://iili.io/C3ekAa2.md.jpg", lucian: "https://iili.io/C3eODWG.md.jpg",
@@ -109,14 +109,20 @@
             iconMap: "https://iili.io/C3yIxoP.md.png", iconShop: "https://iili.io/C3yIwOl.md.png",
             iconBook: "https://iili.io/C3yucGt.md.png", iconMonster: "https://iili.io/C3yuQKF.md.jpg",
             iconElite: "https://iili.io/C3yAdPt.md.jpg", iconBoss: "https://iili.io/C3yAzVS.md.jpg",
-            iconRel: "https://iili.io/C3yA1WB.md.jpg", iconKey: "https://iili.io/C3yAexp.md.jpg"
+            iconRel: "https://iili.io/C3yA1WB.md.jpg", iconKey: "https://iili.io/C3yAexp.md.jpg",
+            iconEvent: "https://iili.io/C3yA1WB.md.jpg",
+            bgIceGarden: "https://iili.io/CFBGj99.md.jpg", bgCozyRoom: "https://iili.io/CFBGQoJ.md.jpg",
+            bgVolcanoEdge: "https://iili.io/CFBMIDu.md.jpg", bgCampfire: "https://iili.io/CFBMPg2.md.jpg",
+            bgBattlefield: "https://iili.io/CFBMDzu.md.jpg",
+            bgCave: "https://iili.io/CFBVFmF.md.jpg", bgSea: "https://iili.io/CFBVuet.md.jpg",
+            bgForest: "https://iili.io/CFBVNBj.md.jpg"
         };
 
         const monsterData = [
-            {name:"Слизень",hp:40,atk:8,coins:8,img:IMG.slime,desc:"Слабое слизистое существо."},
-            {name:"Гоблин",hp:55,atk:12,coins:12,img:IMG.goblin,desc:"Мелкий враг с дубиной."},
-            {name:"Теневой волк",hp:70,atk:16,coins:15,img:IMG.wolf,desc:"Быстрый хищник тьмы."},
-            {name:"Демон",hp:90,atk:20,coins:20,img:IMG.demon,desc:"Огненный демон с рогами."}
+            {name:"Слизень",hp:40,atk:8,coins:8,img:IMG.slime,desc:"Слабое существо."},
+            {name:"Гоблин",hp:55,atk:12,coins:12,img:IMG.goblin,desc:"Мелкий враг."},
+            {name:"Теневой волк",hp:70,atk:16,coins:15,img:IMG.wolf,desc:"Хищник тьмы."},
+            {name:"Демон",hp:90,atk:20,coins:20,img:IMG.demon,desc:"Огненный демон."}
         ];
         const eliteData = [
             {name:"Король Слизней",hp:250,atk:45,coins:30,keyChance:0.20,img:IMG.kingSlime,desc:"Огромный слизень."},
@@ -134,36 +140,40 @@
             "Зейн": [{img:IMG.sword,name:"Меч"},{img:IMG.crystal,name:"Кристалл"}],
             "Кайрос": [{img:IMG.feather,name:"Перо"},{img:IMG.potion,name:"Зелье"}]
         };
-        const giftPlaceholders = {
+        const giftPH = {
             "Люциан": [["🌸","Букет"],["⏰","Часы"]], "Зейн": [["⚔️","Меч"],["💎","Кристалл"]], "Кайрос": [["🪶","Перо"],["🧪","Зелье"]]
         };
         const dates = {
-            "Люциан": {1:{t:"Вы гуляете по ледяному саду. Люциан показывает цветы изо льда.\n\n«Я создал их, думая о ком-то... особенном.»",img:IMG.lucian},2:{t:"Люциан кормит тебя мороженым.\n\n«Никто никогда не делал этого со мной...»",img:IMG.lucian}},
-            "Зейн": {1:{t:"Прогулка у вулкана. Ты оступаешься — Зейн ловит тебя.\n\n«Осторожно, мелочь!»",img:IMG.zein},2:{t:"Зейн у костра: «Меня никто не любил... пока не встретил тебя.»",img:IMG.zein}},
-            "Кайрос": {1:{t:"Вы молча гуляете по тронному залу. Кайрос изредка улыбается.",img:IMG.kairos},2:{t:"Кайрос прикрывает тебя в бою.\n\n«Ты... стоишь того.»",img:IMG.kairos}}
+            "Люциан": {1:{t:"Вы гуляете по ледяному саду. Люциан показывает цветы изо льда.\n\n«Я создал их, думая о ком-то... особенном.»\n\nТы берёшь его за руку, и его пальцы больше не холодные.",img:IMG.lucian,bg:IMG.bgIceGarden},2:{t:"Люциан приносиет две порции мороженого.\n\n«Попробуй... это моё любимое.»\n\nОн кормит тебя с ложечки. «Никто никогда не делал этого со мной...»",img:IMG.lucian,bg:IMG.bgCozyRoom}},
+            "Зейн": {1:{t:"Прогулка у края вулкана. Ты оступаешься — Зейн ловит тебя сильной рукой.\n\n«Осторожно, мелочь!» — рычит он, но его сердце колотится от страха за тебя.",img:IMG.zein,bg:IMG.bgVolcanoEdge},2:{t:"Зейн сидит у костра и рассказывает о детстве.\n\n«Меня никто не любил... пока я не встретил тебя.»\n\nЕго голос срывается. Ты кладёшь голову ему на плечо.",img:IMG.zein,bg:IMG.bgCampfire}},
+            "Кайрос": {1:{t:"Вы молча гуляете по тронному залу. Кайрос изредка улыбается.\n\nТишина между вами — не неловкая, а уютная.",img:IMG.kairos,bg:IMG.bgKairos},2:{t:"Внезапная атака врагов! Кайрос прикрывает тебя в бою.\n\n«Ты... стоишь того, чтобы защищать.»\n\nТы благодаришь его, и он отводит взгляд, но ты видишь — он тронут.",img:IMG.kairos,bg:IMG.bgBattlefield}}
         };
         const finalScenes = {
             "Кайрос": "Кайрос садится рядом. «Ты завоевал меня. Я не хочу быть один.» Вы целуетесь.",
             "Зейн": "Зейн притягивает тебя. «Я счастлив.» Вы обнимаетесь.",
             "Люциан": "Люциан у окна. «Я боялся...» Ты берёшь его за руку. «Ты — мой.»"
         };
+        const events = [
+            {name:"Тёмные пещеры",bg:IMG.bgCave,intro:"Вы с {boss} спускаетесь в глубины тёмных пещер. Вокруг мерцают загадочные кристаллы, воздух наполнен древней магией.",mid:"Внезапно из темноты появляется Пещерный Голем! Его каменное тело покрыто мхом, а глаза горят зелёным огнём.",victory:"{boss} наносит финальный удар, и голем рассыпается на камни. Вы находите сундук с сокровищами!",enemy:{name:"Пещерный Голем",hp:300,atk:50}},
+            {name:"Берега морей",bg:IMG.bgSea,intro:"Вы с {boss} идёте вдоль бескрайнего моря. Солёный ветер треплет волосы, а на горизонте виднеется затонувший корабль.",mid:"На палубе корабля вас встречают Водные Духи! Они поднимаются из воды, окружённые синим свечением.",victory:"{boss} разгоняет духов одним мощным ударом. Вы находите старинный сундук среди обломков корабля!",enemy:{name:"Водные Духи",hp:350,atk:55}},
+            {name:"Тёмный лес",bg:IMG.bgForest,intro:"Вы с {boss} пробираетесь сквозь густой тёмный лес. Ветви деревьев скрипят, а где-то вдалеке воют волки.",mid:"Из-за деревьев выходят Оборотни! Их глаза светятся красным, а клыки блестят в лунном свете.",victory:"{boss} повергает последнего оборотня. Вы устраиваете привал у костра, наслаждаясь победой и тишиной.",enemy:{name:"Оборотни",hp:400,atk:60}}
+        ];
         const bossImages = { "Кайрос": IMG.kairos, "Зейн": IMG.zein, "Люциан": IMG.lucian };
         const bgImages = { "menu": IMG.bgMenu, "monster": IMG.bgMonster, "elite": IMG.bgMonster, "Кайрос": IMG.bgKairos, "Зейн": IMG.bgZein, "Люциан": IMG.bgLucian };
 
-        // ========== СОСТОЯНИЕ ИГРОКА ==========
-        let player = {
-            name:"Герой",level:1,wins:0,maxHp:100,hp:100,attack:15,defense:8,
-            coins:100, relPoints:0, keys:0,cards:[],conquered:[],favorite:null,introDone:false,
-            lastDaily:null
-        };
+        let player = {name:"Герой",level:1,wins:0,maxHp:100,hp:100,attack:15,defense:8,coins:100,relPoints:0,keys:0,cards:[],conquered:[],favorite:null,introDone:false,lastDaily:null,eventCooldown:0,sparkMet:[]};
         let bosses = {"Кайрос":{defeated:false,rel:0,dateCount:0},"Зейн":{defeated:false,rel:0,dateCount:0},"Люциан":{defeated:false,rel:0,dateCount:0}};
         let currentBoss=null,enemyHp=0,enemyMaxHp=0,enemyAttack=0,enemyName="",battleType="",keyChance=0,bossPhase=1,phaseThreshold=0;
         let defeatedMonsters=[],defeatedElites=[],defeatedBosses=[];
-        let isBlocking = false;
+        let isBlocking=false, currentEvent=null, eventBoss=null;
 
         function canFightElite(){return player.level>=11;} function canFightBoss(){return player.level>=21;}
-        function addWin(){player.wins++;if(player.wins>=3){player.wins=0;player.level++;player.maxHp+=20;player.hp=player.maxHp;player.attack+=5;player.defense+=3;addText('🎉 УРОВЕНЬ '+player.level+'!');if(player.level===11)addText('🗺️ Элита!');if(player.level===21)addText('👑 Боссы!');}else{addText('⭐ До уровня: '+(3-player.wins)+'/3');}updateUI();}
+        function canDoEvents(){return player.conquered.length>0&&player.eventCooldown<=0;}
+        function addWin(){player.wins++;if(player.wins>=3){player.wins=0;player.level++;player.maxHp+=20;player.hp=player.maxHp;player.attack+=5;player.defense+=3;addText('🎉 УРОВЕНЬ '+player.level+'!');if(player.level===11)addText('🗺️ Элита!');if(player.level===21)addText('👑 Боссы!');checkSpark();}else{addText('⭐ До уровня: '+(3-player.wins)+'/3');}updateUI();}
+        function checkSpark(){let lvl=player.level;if([5,10,15,20,30].includes(lvl)&&!player.sparkMet.includes(lvl)){player.sparkMet.push(lvl);sparkScene(lvl);}}
+        function sparkScene(lvl){clearJoystick();setBg('menu');showImg(IMG.guide);let msgs={5:["✨ Искра: «"+player.name+"! Ты уже освоился в этом мире?»","✨ Искра: «Я вижу, ты становишься сильнее. Но впереди ещё долгий путь!»"],10:["✨ Искра: «Десятый уровень! Ты растёшь на глазах!»","✨ Искра: «Помни — сила не только в мече, но и в сердце.»"],15:["✨ Искра: «Пятнадцатый уровень! Твои успехи впечатляют!»","✨ Искра: «Ты уже можешь сражаться с элитными монстрами. Будь осторожен!»"],20:["✨ Искра: «Двадцатый уровень! Ты почти легенда!»","✨ Искра: «Скоро ты сможешь бросить вызов самим Владыкам Тьмы...»"],30:["✨ Искра: «Тридцатый уровень... Ты готов к финальной битве.»","✨ Искра: «Я горжусь тобой, "+player.name+". Ты — настоящий герой.»"]};let m=msgs[lvl];setText(m[0]);setButtons([{text:'...',action:()=>{setText(m[1]);setButtons([{text:'Спасибо, Искра',action:mainMenu}]);}}]);}
         function setBg(k){let g=document.getElementById('game');g.style.backgroundImage=bgImages[k]?'url('+bgImages[k]+')':'none';if(!bgImages[k])g.style.background='rgba(10,0,15,0.92)';}
+        function setBgDirect(url){document.getElementById('game').style.backgroundImage='url('+url+')';}
         function showImg(url){document.getElementById('portraitArea').innerHTML=url?'<div class="portrait-container"><img src="'+url+'" alt="" onerror="this.parentElement.innerHTML=\'<div style=color:#888;font-size:0.7em;padding:20px>🖼️</div>\'"></div>':'';}
         function hidePortrait(){document.getElementById('portraitArea').innerHTML='';}
         function clearJoystick(){document.getElementById('joystickArea').innerHTML='';}
@@ -175,22 +185,19 @@
         function setButtonsHTML(html){document.getElementById('buttons').innerHTML=html;}
         function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;} function chance(prob){return Math.random()<prob;}
 
-        // ========== ЕЖЕДНЕВНЫЙ БОНУС ==========
         function checkDaily(){
-            let today = new Date().toDateString();
-            if (player.lastDaily === today) return;
-            player.lastDaily = today;
-            let dayCount = parseInt(localStorage.getItem('blDailyCount')||'0') + 1;
-            if (dayCount > 10) dayCount = 1;
-            localStorage.setItem('blDailyCount', dayCount);
-            player.coins += 50;
-            if (dayCount >= 10) { player.relPoints += 50; }
-            let msg = '🎁 ЕЖЕДНЕВНЫЙ БОНУС! День '+dayCount+'/10\n+50💰';
-            if (dayCount >= 10) msg += '\n+50💕 очков отношений!';
-            setText(msg);
-            updateUI();
-            setButtons([{text:'Спасибо!',action:mainMenu}]);
-            return true;
+            let today=new Date().toDateString();
+            if(player.lastDaily===today)return false;
+            player.lastDaily=today;
+            let dc=parseInt(localStorage.getItem('blDailyCount')||'0')+1;
+            if(dc>10)dc=1;
+            localStorage.setItem('blDailyCount',dc);
+            player.coins+=50;
+            if(dc>=10)player.relPoints+=50;
+            if(player.eventCooldown>0)player.eventCooldown--;
+            let msg='🎁 ЕЖЕДНЕВНЫЙ БОНУС! День '+dc+'/10\n+50💰';
+            if(dc>=10)msg+='\n+50💕';
+            setText(msg);updateUI();setButtons([{text:'Спасибо!',action:mainMenu}]);return true;
         }
 
         function introScene(){clearJoystick();setBg('menu');hideEnemyBar();updateUI();showImg(IMG.guide);setText('✨ Искра: «Проснись!»');setButtons([{text:'...Где я?',action:introStep2}]);}
@@ -198,11 +205,10 @@
         function introStep3(){showImg(IMG.guide);setText('✨ Искра: «Домой? Ну уж нет! Ты Избранный! Я твой проводник.»');setButtons([{text:'Ладно...',action:introDone}]);}
         function introDone(){player.introDone=true;hidePortrait();setText('✨ Искра: «Осмотрись!»');setButtons([{text:'Вперёд!',action:mainMenu}]);}
 
-        function mainMenu(){clearJoystick();hideEnemyBar();hidePortrait();setBg('menu');enemyHp=0;updateUI();if(!player.introDone){introScene();return;}
-            if (checkDaily()) return;
+        function mainMenu(){clearJoystick();hideEnemyBar();hidePortrait();setBg('menu');enemyHp=0;updateUI();if(!player.introDone){introScene();return;}if(checkDaily())return;
             setText('✨ Искра: «Куда, '+player.name+'?»');
             let l='<div class="side-icons"><button class="circle-icon" onclick="showMap()"><img src="'+IMG.iconMap+'" alt=""></button><button class="circle-icon" onclick="showBook()"><img src="'+IMG.iconBook+'" alt=""></button><button class="circle-icon" onclick="startMonster()"><img src="'+IMG.iconMonster+'" alt=""></button>'+ (canFightElite()?'<button class="circle-icon" onclick="startElite()"><img src="'+IMG.iconElite+'" alt=""></button>':'<button class="circle-icon locked"><img src="'+IMG.iconElite+'" alt=""></button>')+ (canFightBoss()?'<button class="circle-icon" onclick="chooseBoss()"><img src="'+IMG.iconBoss+'" alt=""></button>':'<button class="circle-icon locked"><img src="'+IMG.iconBoss+'" alt=""></button>')+'</div>';
-            let r='<div class="side-icons"><button class="circle-icon" onclick="chooseRel()"><img src="'+IMG.iconRel+'" alt=""></button><button class="circle-icon" onclick="shop()"><img src="'+IMG.iconShop+'" alt=""></button><button class="circle-icon" onclick="openChest()"><img src="'+IMG.iconKey+'" alt=""></button></div>';
+            let r='<div class="side-icons"><button class="circle-icon" onclick="chooseRel()"><img src="'+IMG.iconRel+'" alt=""></button><button class="circle-icon" onclick="shop()"><img src="'+IMG.iconShop+'" alt=""></button><button class="circle-icon" onclick="openChest()"><img src="'+IMG.iconKey+'" alt=""></button>'+ (canDoEvents()?'<button class="circle-icon" onclick="startEvent()"><img src="'+IMG.iconEvent+'" alt=""></button>':'<button class="circle-icon locked"><img src="'+IMG.iconEvent+'" alt=""></button>')+'</div>';
             let c='<div class="center-area">'+(player.favorite&&bossImages[player.favorite]?'<div class="fav-label">⭐ '+player.favorite+' ⭐</div><div class="fav-portrait-large"><img src="'+bossImages[player.favorite]+'" alt=""></div><div class="fav-btn-row"><button class="tiny-btn" onclick="setFav()">🔄</button></div>':'<div class="fav-empty">⭐<br>ПОБЕДИ БОССА</div>')+'</div>';
             setButtonsHTML('<div class="main-layout">'+l+c+r+'</div><div class="menu-buttons"><button class="menu-btn" onclick="saveMenu()">💾</button><button class="menu-btn" onclick="loadMenu()">📂</button><button class="menu-btn" onclick="stats()">📊</button><button class="menu-btn" onclick="newGameConfirm()">🆕</button></div>');}
 
@@ -210,46 +216,60 @@
         function showBook(){clearJoystick();let h='<div class="book-overlay"><div style="color:#c080c0;font-size:1em;">📖 БЕСТИАРИЙ</div>';h+='<div class="map-section-label">Монстры</div>';monsterData.forEach(m=>{let k=defeatedMonsters.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';});h+='<div class="map-section-label">Элита</div>';eliteData.forEach(m=>{let k=defeatedElites.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';});h+='<div class="map-section-label">Боссы</div>';for(let n in bossData){let m=bossData[n],k=defeatedBosses.includes(n);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?n:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
         function setFav(){let c=player.conquered;if(c.length===0)return;let b=c.map(x=>({text:x,action:()=>{player.favorite=x;mainMenu();}}));b.push({text:'Убрать',action:()=>{player.favorite=null;mainMenu();}});setText('Выбери:');setButtons(b);}
 
-        // ========== БИТВЫ С БЛОКОМ И КРИТОМ ==========
+        // ========== СОБЫТИЯ ==========
+        function startEvent(){if(!canDoEvents()){setText('Нет доступных событий!');setButtons([{text:'Назад',action:mainMenu}]);return;}let ev=events[Math.floor(Math.random()*events.length)];let boss=player.conquered[Math.floor(Math.random()*player.conquered.length)];currentEvent=ev;eventBoss=boss;setBgDirect(ev.bg);showImg(bossImages[boss]);let intro=ev.intro.replace('{boss}',boss);setText('⚔️ СОБЫТИЕ: '+ev.name+'\n\n'+intro);setButtons([{text:'Идти дальше',action:eventMid}]);}
+        function eventMid(){let ev=currentEvent,boss=eventBoss;setBgDirect(ev.bg);showImg(bossImages[boss]);setText('⚔️ '+ev.name+'\n\n'+ev.mid);setButtons([{text:'Сражаться!',action:eventBattle}]);}
+        function eventBattle(){let ev=currentEvent;enemyName=ev.enemy.name;enemyHp=ev.enemy.hp;enemyMaxHp=ev.enemy.hp;enemyAttack=ev.enemy.atk;battleType='event';isBlocking=false;updateEnemyBar();setBgDirect(ev.bg);setText('⚔️ Битва с '+enemyName+'!');eventJoy();}
+        function eventJoy(){updateUI();updateEnemyBar();let h='<div class="joystick-container"><button class="joy-btn" onclick="eAtk()">⚔️</button><button class="joy-btn" onclick="eSatk()">💥</button><button class="joy-btn" onclick="eFlee()">🏃</button>';h+='<button class="joy-btn" onclick="eBlock()">🛡️</button><div class="joy-center">⚡</div><button class="joy-btn" onclick="eCrit()">💢</button>';h+='<button class="joy-btn" onclick="eDef()">⬆️</button><button class="joy-btn" onclick="eHeal()">💚</button><button class="joy-btn" onclick="eFlee()">🏃</button></div>';document.getElementById('joystickArea').innerHTML=h;document.getElementById('buttons').innerHTML='';}
+        function eAtk(){let d=Math.max(1,player.attack+rand(-3,5));enemyHp-=d;addText('⚔️ -'+d);updateEnemyBar();if(enemyHp<=0){eventWin();return;}eTurn();}
+        function eSatk(){if(chance(0.7)){let d=Math.max(1,player.attack*2);enemyHp-=d;addText('💥 -'+d);}else{addText('💨 Промах!');}updateEnemyBar();if(enemyHp<=0){eventWin();return;}eTurn();}
+        function eBlock(){isBlocking=true;addText('🛡️ Блок!');eTurn();}
+        function eCrit(){if(chance(0.4)){let d=Math.max(1,player.attack*3);enemyHp-=d;addText('💢 КРИТ! -'+d);}else{addText('💨 Мимо!');}updateEnemyBar();if(enemyHp<=0){eventWin();return;}eTurn();}
+        function eDef(){player.defense+=5;addText('⬆️ Защита +5');eTurn();}
+        function eHeal(){let h=Math.floor(player.maxHp*0.2);player.hp=Math.min(player.maxHp,player.hp+h);addText('💚 +'+h);updateUI();eTurn();}
+        function eFlee(){addText('🏃 Нельзя сбежать из события!');eTurn();}
+        function eTurn(){let d=Math.max(1,enemyAttack+rand(-2,4)-player.defense);if(isBlocking){d=Math.floor(d/2);isBlocking=false;addText('🛡️ Блок!');}player.hp-=d;addText('💢 '+enemyName+' -'+d);updateUI();if(player.hp<=0){player.hp=Math.floor(player.maxHp/2);addText('💀 Поражение...');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();return;}eventJoy();}
+        function eventWin(){addText('🎉 ПОБЕДА!');player.coins+=100;player.relPoints+=50;player.eventCooldown=1;let ev=currentEvent,boss=eventBoss;let vic=ev.victory.replace('{boss}',boss);clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;updateUI();setBgDirect(ev.bg);showImg(bossImages[boss]);setText('🎉 СОБЫТИЕ ПРОЙДЕНО!\n\n'+vic+'\n\nНаграда: +100💰 +50💕');setButtons([{text:'Отлично!',action:mainMenu}]);}
+
+        // ========== БИТВЫ ==========
         function startBattle(n,hp,atk,type,kch,cr,img){hideEnemyBar();hidePortrait();isBlocking=false;enemyName=n;enemyHp=hp;enemyMaxHp=hp;enemyAttack=atk;battleType=type;keyChance=kch||0;updateEnemyBar();if(img)showImg(img);setBg(type==='boss'?n:(type==='elite'?'elite':'monster'));setText((type==='boss'?'👑 ':(type==='elite'?'💀 ':'⚔️ '))+n);joy(cr);}
         function startMonster(){let m=monsterData[Math.floor(Math.random()*4)];startBattle(m.name,m.hp,m.atk,'monster',0,m.coins,m.img);}
         function startElite(){if(!canFightElite()){setText('🔒 11 ур.');setButtons([{text:'Назад',action:mainMenu}]);return;}let m=eliteData[Math.floor(Math.random()*4)];startBattle(m.name,m.hp,m.atk,'elite',m.keyChance,m.coins,m.img);}
         function joy(cr){updateUI();updateEnemyBar();let h='<div class="joystick-container"><button class="joy-btn" onclick="atk('+cr+')">⚔️</button><button class="joy-btn" onclick="satk('+cr+')">💥</button><button class="joy-btn" onclick="flee()">🏃</button>';h+='<button class="joy-btn" onclick="block('+cr+')">🛡️</button><div class="joy-center">⚡</div><button class="joy-btn" onclick="crit('+cr+')">💢</button>';h+='<button class="joy-btn" onclick="def('+cr+')">⬆️</button><button class="joy-btn" onclick="heal('+cr+')">💚</button><button class="joy-btn" onclick="flee()">🏃</button></div>';document.getElementById('joystickArea').innerHTML=h;document.getElementById('buttons').innerHTML='';}
-        function atk(cr){let d=Math.max(1,player.attack+rand(-3,5));enemyHp-=d;addText('⚔️ Атака! -'+d);updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
-        function satk(cr){if(chance(0.7)){let d=Math.max(1,player.attack*2);enemyHp-=d;addText('💥 Сильная атака! -'+d);}else{addText('💨 Промах!');}updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
-        function block(cr){isBlocking=true;addText('🛡️ Блок! Следующий урон снижен вдвое.');eturn(cr);}
-        function crit(cr){if(chance(0.4)){let d=Math.max(1,player.attack*3);enemyHp-=d;addText('💢 КРИТ! -'+d);}else{addText('💨 Не вышло!');}updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
+        function atk(cr){let d=Math.max(1,player.attack+rand(-3,5));enemyHp-=d;addText('⚔️ -'+d);updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
+        function satk(cr){if(chance(0.7)){let d=Math.max(1,player.attack*2);enemyHp-=d;addText('💥 -'+d);}else{addText('💨 Промах!');}updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
+        function block(cr){isBlocking=true;addText('🛡️ Блок!');eturn(cr);}
+        function crit(cr){if(chance(0.4)){let d=Math.max(1,player.attack*3);enemyHp-=d;addText('💢 КРИТ! -'+d);}else{addText('💨 Мимо!');}updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
         function def(cr){player.defense+=5;addText('⬆️ Защита +5');eturn(cr);}
-        function heal(cr){let h=Math.floor(player.maxHp*0.2);player.hp=Math.min(player.maxHp,player.hp+h);addText('💚 +'+h+' HP');updateUI();eturn(cr);}
+        function heal(cr){let h=Math.floor(player.maxHp*0.2);player.hp=Math.min(player.maxHp,player.hp+h);addText('💚 +'+h);updateUI();eturn(cr);}
         function flee(){if(chance(0.5)){addText('🏃 Сбежал!');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();}else{addText('Не вышло!');eturn(0);}}
-        function eturn(cr){let d=Math.max(1,enemyAttack+rand(-2,4)-player.defense);if(isBlocking){d=Math.floor(d/2);isBlocking=false;addText('🛡️ Блок снизил урон!');}player.hp-=d;addText('💢 '+enemyName+' -'+d);updateUI();if(player.hp<=0){player.hp=Math.floor(player.maxHp/2);addText('💀 Поражение...');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();return;}joy(cr);}
-        function win(cr){addText('🎉 ПОБЕДА!');addWin();if(cr>0){player.coins+=cr;addText('💰 +'+cr);}if(battleType==='monster'&&!defeatedMonsters.includes(enemyName))defeatedMonsters.push(enemyName);if(battleType==='elite'&&!defeatedElites.includes(enemyName))defeatedElites.push(enemyName);if(battleType==='boss'&&!defeatedBosses.includes(enemyName))defeatedBosses.push(enemyName);if(battleType==='elite'&&chance(keyChance)&&player.cards.length<3){player.keys++;addText('✨ КЛЮЧ! Всего:'+player.keys);}clearJoystick();hideEnemyBar();if(battleType!=='boss')hidePortrait();enemyHp=0;updateUI();setButtons([{text:'Продолжить',action:mainMenu}]);}
+        function eturn(cr){let d=Math.max(1,enemyAttack+rand(-2,4)-player.defense);if(isBlocking){d=Math.floor(d/2);isBlocking=false;}player.hp-=d;addText('💢 '+enemyName+' -'+d);updateUI();if(player.hp<=0){player.hp=Math.floor(player.maxHp/2);addText('💀 Поражение...');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();return;}joy(cr);}
+        function win(cr){addText('🎉 ПОБЕДА!');addWin();if(cr>0){player.coins+=cr;addText('💰 +'+cr);}if(battleType==='monster'&&!defeatedMonsters.includes(enemyName))defeatedMonsters.push(enemyName);if(battleType==='elite'&&!defeatedElites.includes(enemyName))defeatedElites.push(enemyName);if(battleType==='boss'&&!defeatedBosses.includes(enemyName))defeatedBosses.push(enemyName);if(battleType==='elite'&&chance(keyChance)&&player.cards.length<3){player.keys++;addText('✨ КЛЮЧ!');}clearJoystick();hideEnemyBar();if(battleType!=='boss')hidePortrait();enemyHp=0;updateUI();setButtons([{text:'Продолжить',action:mainMenu}]);}
 
         function openChest(){clearJoystick();if(player.keys<=0){setText('Нет ключей!');setButtons([{text:'Назад',action:mainMenu}]);return;}player.keys--;let av=['Кайрос','Зейн','Люциан'].filter(b=>!player.cards.includes(b));if(av.length===0){player.keys++;setText('Все карты есть!');setButtons([{text:'Назад',action:mainMenu}]);return;}let obt=av[Math.floor(Math.random()*av.length)];player.cards.push(obt);showImg(bossImages[obt]);setBg(obt);setText('🗝️ Сундук!<br>🎴 '+obt+'!');updateUI();setButtons([{text:'OK',action:mainMenu}]);}
-
         function chooseBoss(){clearJoystick();if(!canFightBoss()){setText('🔒 21 ур.');setButtons([{text:'Назад',action:mainMenu}]);return;}let avail=player.cards.filter(b=>!bosses[b].defeated);if(avail.length===0){setText('Все боссы побеждены!');setButtons([{text:'Назад',action:mainMenu}]);return;}let btns=avail.map(x=>({text:x,action:()=>bossBattle(x)}));btns.push({text:'Назад',action:mainMenu});setText('Выбери:');setButtons(btns);}
         function bossBattle(n){currentBoss=n;player.hp=player.maxHp;bossPhase=1;isBlocking=false;let d=bossData[n];enemyName=n;enemyHp=d.hp;enemyMaxHp=d.hp;enemyAttack=d.atk;phaseThreshold=Math.floor(d.hp*0.5);battleType='boss';setBg(n);showImg(d.img);updateEnemyBar();setText('👑 '+n);bossJoy();}
         function bossJoy(){updateUI();updateEnemyBar();let h='<div class="joystick-container"><button class="joy-btn" onclick="bAtk()">⚔️</button><button class="joy-btn" onclick="bSatk()">💥</button><button class="joy-btn" onclick="bHeal()">💚</button>';h+='<button class="joy-btn" onclick="bBlock()">🛡️</button><div class="joy-center">👑</div><button class="joy-btn" onclick="bCrit()">💢</button>';h+='<button class="joy-btn" onclick="bDef()">⬆️</button><button class="joy-btn" onclick="bHeal()">💚</button><button class="joy-btn" onclick="bHeal()">💚</button></div>';document.getElementById('joystickArea').innerHTML=h;document.getElementById('buttons').innerHTML='';}
         function bAtk(){let d=Math.max(1,player.attack+rand(-5,8));enemyHp-=d;addText('⚔️ -'+d);updateEnemyBar();if(enemyHp<=0){bWin();return;}bTurn();}
-        function bSatk(){if(chance(0.6)){let d=Math.max(1,player.attack*2);enemyHp-=d;addText('💥 Сильная! -'+d);}else{addText('💨 Промах!');}updateEnemyBar();if(enemyHp<=0){bWin();return;}bTurn();}
+        function bSatk(){if(chance(0.6)){let d=Math.max(1,player.attack*2);enemyHp-=d;addText('💥 -'+d);}else{addText('💨 Промах!');}updateEnemyBar();if(enemyHp<=0){bWin();return;}bTurn();}
         function bBlock(){isBlocking=true;addText('🛡️ Блок!');bTurn();}
         function bCrit(){if(chance(0.35)){let d=Math.max(1,player.attack*3);enemyHp-=d;addText('💢 КРИТ! -'+d);}else{addText('💨 Мимо!');}updateEnemyBar();if(enemyHp<=0){bWin();return;}bTurn();}
         function bDef(){player.defense+=8;addText('⬆️ Защита +8');bTurn();}
         function bHeal(){let h=Math.floor(player.maxHp*0.25);player.hp=Math.min(player.maxHp,player.hp+h);addText('💚 +'+h);updateUI();bTurn();}
-        function bTurn(){let d=Math.max(1,enemyAttack+rand(-5,15)-player.defense);if(isBlocking){d=Math.floor(d/2);isBlocking=false;addText('🛡️ Блок!');}player.hp-=d;addText('💢 '+currentBoss+' -'+d);updateUI();if(enemyHp<=phaseThreshold&&bossPhase===1){bossPhase=2;enemyAttack+=15;addText('⚡ Ярость!');}if(player.hp<=0){player.hp=Math.floor(player.maxHp/2);addText('💀 Поражение...');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();return;}bossJoy();}
+        function bTurn(){let d=Math.max(1,enemyAttack+rand(-5,15)-player.defense);if(isBlocking){d=Math.floor(d/2);isBlocking=false;}player.hp-=d;addText('💢 '+currentBoss+' -'+d);updateUI();if(enemyHp<=phaseThreshold&&bossPhase===1){bossPhase=2;enemyAttack+=15;addText('⚡ Ярость!');}if(player.hp<=0){player.hp=Math.floor(player.maxHp/2);addText('💀 Поражение...');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();return;}bossJoy();}
         function bWin(){addText('🎉 ПОБЕДА!');bosses[currentBoss].defeated=true;if(!player.conquered.includes(currentBoss))player.conquered.push(currentBoss);if(!player.favorite)player.favorite=currentBoss;if(!defeatedBosses.includes(currentBoss))defeatedBosses.push(currentBoss);addWin();player.coins+=80;player.relPoints+=20;addText('+80💰 +20💕');clearJoystick();hideEnemyBar();enemyHp=0;updateUI();setButtons([{text:'Продолжить',action:mainMenu}]);}
 
-        // ========== ОТНОШЕНИЯ (ОЧКИ ОТНОШЕНИЙ) ==========
+        // ========== ОТНОШЕНИЯ ==========
         function chooseRel(){clearJoystick();if(player.conquered.length===0){setText('Победи босса!');setButtons([{text:'Назад',action:mainMenu}]);return;}let b=player.conquered.map(x=>({text:x+' (ур.'+Math.min(5,Math.floor(bosses[x].rel/100)+1)+')',action:()=>relMenu(x)}));b.push({text:'Назад',action:mainMenu});setText('💕 Отношения | 💕'+player.relPoints);setButtons(b);}
         function relMenu(n){clearJoystick();setBg(n);showImg(bossImages[n]);let b=bosses[n],lvl=Math.min(5,Math.floor(b.rel/100)+1);let msg='💕 '+n+' | Ур.'+lvl+'/5 | '+b.rel+'/'+(lvl*100)+' | 💕'+player.relPoints;if(b.rel>=500)msg+='\n❤️ Макс!';setText(msg);updateUI();let btns=[];btns.push({text:'💬 Поговорить (10💕, +5)',action:()=>relAct(n,'talk')});btns.push({text:'🤝 Прикоснуться (20💕, +10)',action:()=>relAct(n,'touch')});btns.push({text:'🎁 Подарок (30💕, +20)',action:()=>relGift(n)});if(lvl>=4&&b.dateCount<2)btns.push({text:'💖 Свидание (50💕, +50)',action:()=>relDate(n)});if(b.rel>=500&&b.dateCount>=2)btns.push({text:'🌙 Финальная сцена',action:()=>relFinal(n)});if(player.favorite===n){btns.push({text:'💔 Убрать из избранного',action:()=>{player.favorite=null;setText('💔 '+n+' больше не избранный.');updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}});}else{btns.push({text:'❤️ В избранное',action:()=>{player.favorite=n;setText('❤️ '+n+' теперь избранный!');updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}});}btns.push({text:'Назад',action:chooseRel});setButtons(btns);}
         function relAct(n,t){let costs={talk:10,touch:20},gains={talk:5,touch:10};if(player.relPoints<costs[t]){setText('Нужно '+costs[t]+'💕!');setButtons([{text:'Назад',action:()=>relMenu(n)}]);return;}player.relPoints-=costs[t];bosses[n].rel=Math.min(500,bosses[n].rel+gains[t]);setText((t==='talk'?'Вы поговорили.':'Ты коснулся его.')+' +'+gains[t]+' (-'+costs[t]+'💕)');updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}
-        function relGift(n){clearJoystick();if(player.relPoints<30){setText('Нужно 30💕!');setButtons([{text:'Назад',action:()=>relMenu(n)}]);return;}let g=giftData[n],ph=giftPlaceholders[n];let h='🎁 ВЫБЕРИ ПОДАРОК (30💕)<br><br>';h+='<div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">';h+='<div style="text-align:center;"><div class="gift-card"><img src="'+g[0].img+'" onerror="this.parentElement.innerHTML=\'<div class=gift-placeholder><span class=icon>'+ph[0][0]+'</span>'+ph[0][1]+'</div>\'"></div><br>'+g[0].name+'<br><button class="menu-btn" onclick="relGiftOk(\''+n+'\',0)">Выбрать</button></div>';h+='<div style="text-align:center;"><div class="gift-card"><img src="'+g[1].img+'" onerror="this.parentElement.innerHTML=\'<div class=gift-placeholder><span class=icon>'+ph[1][0]+'</span>'+ph[1][1]+'</div>\'"></div><br>'+g[1].name+'<br><button class="menu-btn" onclick="relGiftOk(\''+n+'\',1)">Выбрать</button></div>';h+='</div><br><button class="menu-btn" onclick="relMenu(\''+n+'\')">Назад</button>';setText(h);setButtonsHTML('');}
-        function relGiftOk(n,idx){player.relPoints-=30;bosses[n].rel=Math.min(500,bosses[n].rel+20);let g=giftData[n][idx],ph=giftPlaceholders[n][idx];let h='🎁 Подарок вручён!<br><br><div class="gift-ok-card"><img src="'+g.img+'" onerror="this.innerHTML=\'<div class=gift-placeholder style=width:160px;height:160px><span class=icon style=font-size:3em>'+ph[0]+'</span>'+ph[1]+'</div>\'"></div><br>'+g.name+'<br><br>+20 очков! (-30💕)';setText(h);updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}
-        function relDate(n){if(player.relPoints<50){setText('Нужно 50💕!');setButtons([{text:'Назад',action:()=>relMenu(n)}]);return;}player.relPoints-=50;bosses[n].rel=Math.min(500,bosses[n].rel+50);bosses[n].dateCount++;let d=dates[n][bosses[n].dateCount];setBg(n);showImg(d.img);setText('💖 СВИДАНИЕ #'+bosses[n].dateCount+'\n\n'+d.t+'\n\n+50 очков! (-50💕)');updateUI();setButtons([{text:'Прекрасно...',action:()=>relMenu(n)}]);}
+        function relGift(n){clearJoystick();if(player.relPoints<30){setText('Нужно 30💕!');setButtons([{text:'Назад',action:()=>relMenu(n)}]);return;}let g=giftData[n],ph=giftPH[n];let h='🎁 ВЫБЕРИ ПОДАРОК (30💕)<br><br>';h+='<div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">';h+='<div style="text-align:center;"><div class="gift-card"><img src="'+g[0].img+'" onerror="this.parentElement.innerHTML=\'<div class=gift-placeholder><span class=icon>'+ph[0][0]+'</span>'+ph[0][1]+'</div>\'"></div><br>'+g[0].name+'<br><button class="menu-btn" onclick="relGiftOk(\''+n+'\',0)">Выбрать</button></div>';h+='<div style="text-align:center;"><div class="gift-card"><img src="'+g[1].img+'" onerror="this.parentElement.innerHTML=\'<div class=gift-placeholder><span class=icon>'+ph[1][0]+'</span>'+ph[1][1]+'</div>\'"></div><br>'+g[1].name+'<br><button class="menu-btn" onclick="relGiftOk(\''+n+'\',1)">Выбрать</button></div>';h+='</div><br><button class="menu-btn" onclick="relMenu(\''+n+'\')">Назад</button>';setText(h);setButtonsHTML('');}
+        function relGiftOk(n,idx){player.relPoints-=30;bosses[n].rel=Math.min(500,bosses[n].rel+20);let g=giftData[n][idx],ph=giftPH[n][idx];let h='🎁 Подарок вручён!<br><br><div class="gift-ok-card"><img src="'+g.img+'" onerror="this.innerHTML=\'<div class=gift-placeholder style=width:160px;height:160px><span class=icon style=font-size:3em>'+ph[0]+'</span>'+ph[1]+'</div>\'"></div><br>'+g.name+'<br><br>+20 очков! (-30💕)';setText(h);updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}
+        function relDate(n){if(player.relPoints<50){setText('Нужно 50💕!');setButtons([{text:'Назад',action:()=>relMenu(n)}]);return;}player.relPoints-=50;bosses[n].rel=Math.min(500,bosses[n].rel+50);bosses[n].dateCount++;let d=dates[n][bosses[n].dateCount];setBgDirect(d.bg);showImg(d.img);setText('💖 СВИДАНИЕ #'+bosses[n].dateCount+'\n\n'+d.t+'\n\n+50 очков! (-50💕)');updateUI();setButtons([{text:'Прекрасно...',action:()=>relMenu(n)}]);}
         function relFinal(n){setBg(n);showImg(bossImages[n]);setText('🌙 ФИНАЛЬНАЯ СЦЕНА\n\n'+finalScenes[n]);setButtons([{text:'❤️',action:()=>relMenu(n)}]);}
 
-        function shop(){clearJoystick();setBg('menu');setText('🏪 | 💰'+player.coins+' | 💕'+player.relPoints);setButtons([{text:'🧪 +50 HP (80💰)',action:()=>{if(player.coins>=80){player.coins-=80;player.hp=Math.min(player.maxHp,player.hp+50);}shop();}},{text:'⚗️ +10 Атк (120💰)',action:()=>{if(player.coins>=120){player.coins-=120;player.attack+=10;}shop();}},{text:'💕 +20 очков отношений (100💰)',action:()=>{if(player.coins>=100){player.coins-=100;player.relPoints+=20;}shop();}},{text:'Назад',action:mainMenu}]);}
-        function stats(){clearJoystick();setBg('menu');let m='📊 СТАТЫ\nУр.'+player.level+' | HP:'+player.maxHp+' | Атк:'+player.attack+' | Защ:'+player.defense+'\n💰'+player.coins+' | 💕'+player.relPoints+' | 🔑'+player.keys+'\n\n';if(player.conquered.length>0){m+='👑 БОССЫ:\n';player.conquered.forEach(b=>{let bi=bossData[b];m+=b+': '+bi.desc+'\nСпособность: '+bi.ability+'\nЛюбит: '+bi.likes+'\nОтношения: '+bosses[b].rel+'/500\n\n';});}setText(m);setButtons([{text:'Назад',action:mainMenu}]);}
+        function shop(){clearJoystick();setBg('menu');setText('🏪 | 💰'+player.coins+' | 💕'+player.relPoints);setButtons([{text:'🧪 +50 HP (80💰)',action:()=>{if(player.coins>=80){player.coins-=80;player.hp=Math.min(player.maxHp,player.hp+50);}shop();}},{text:'⚗️ +10 Атк (120💰)',action:()=>{if(player.coins>=120){player.coins-=120;player.attack+=10;}shop();}},{text:'💕 +20 очков (100💰)',action:()=>{if(player.coins>=100){player.coins-=100;player.relPoints+=20;}shop();}},{text:'Назад',action:mainMenu}]);}
+        function stats(){clearJoystick();setBg('menu');let m='📊 СТАТЫ\nУр.'+player.level+' | HP:'+player.maxHp+' | Атк:'+player.attack+' | Защ:'+player.defense+'\n💰'+player.coins+' | 💕'+player.relPoints+' | 🔑'+player.keys+'\nСобытий: '+(player.eventCooldown>0?'⏳'+player.eventCooldown+' дн.':'✅')+'\n\n';if(player.conquered.length>0){m+='👑 БОССЫ:\n';player.conquered.forEach(b=>{let bi=bossData[b];m+=b+': '+bi.desc+'\nСпособность: '+bi.ability+'\nЛюбит: '+bi.likes+'\nОтношения: '+bosses[b].rel+'/500\n\n';});}setText(m);setButtons([{text:'Назад',action:mainMenu}]);}
 
         function getSaves(){let s=localStorage.getItem('blFantasySaves');return s?JSON.parse(s):{};}
         function saveSaves(s){localStorage.setItem('blFantasySaves',JSON.stringify(s));}
@@ -259,7 +279,7 @@
         function loadSlot(n){let s=getSaves()['slot'+n];if(!s)return;player=s.player;bosses=s.bosses;defeatedMonsters=s.dM||[];defeatedElites=s.dE||[];defeatedBosses=s.dB||[];player.introDone=true;setText('📂 '+s.name);updateUI();setButtons([{text:'Играть',action:mainMenu}]);}
         function newGameConfirm(){clearJoystick();setText('⚠️ Начать новую игру?');setButtons([{text:'✅ Да',action:newGame},{text:'❌ Нет',action:mainMenu}]);}
         function start(){clearJoystick();let s=getSaves(),has=Object.keys(s).length>0;setBg('menu');updateUI();if(has){setText('📂 Сохранения найдены.');setButtons([{text:'📂 Загрузить',action:loadMenu},{text:'🆕 Новая',action:newGameConfirm}]);}else{setText('🔥 BL ФЕНТЕЗИ 🔥');setButtons([{text:'Начать',action:newGame}]);}}
-        function newGame(){player={name:prompt('Имя героя:','Герой')||'Герой',level:1,wins:0,maxHp:100,hp:100,attack:15,defense:8,coins:100,relPoints:0,keys:0,cards:[],conquered:[],favorite:null,introDone:false,lastDaily:null};bosses={"Кайрос":{defeated:false,rel:0,dateCount:0},"Зейн":{defeated:false,rel:0,dateCount:0},"Люциан":{defeated:false,rel:0,dateCount:0}};defeatedMonsters=[];defeatedElites=[];defeatedBosses=[];setText('⚡ '+player.name+', добро пожаловать!');updateUI();setButtons([{text:'Вперёд!',action:()=>{player.introDone?mainMenu():introScene();}}]);}
+        function newGame(){player={name:prompt('Имя героя:','Герой')||'Герой',level:1,wins:0,maxHp:100,hp:100,attack:15,defense:8,coins:100,relPoints:0,keys:0,cards:[],conquered:[],favorite:null,introDone:false,lastDaily:null,eventCooldown:0,sparkMet:[]};bosses={"Кайрос":{defeated:false,rel:0,dateCount:0},"Зейн":{defeated:false,rel:0,dateCount:0},"Люциан":{defeated:false,rel:0,dateCount:0}};defeatedMonsters=[];defeatedElites=[];defeatedBosses=[];setText('⚡ '+player.name+', добро пожаловать!');updateUI();setButtons([{text:'Вперёд!',action:()=>{player.introDone?mainMenu():introScene();}}]);}
         function setButtons(btns){let d=document.getElementById('buttons');d.innerHTML='';d.className='menu-buttons';btns.forEach(b=>{let x=document.createElement('button');x.textContent=b.text;x.onclick=b.action;x.className='menu-btn';d.appendChild(x);});}
         function init(){let bar=document.getElementById('loadingBar'),w=0;let iv=setInterval(()=>{w+=Math.floor(Math.random()*15)+5;if(w>=100){w=100;clearInterval(iv);setTimeout(()=>{document.getElementById('loadingScreen').classList.add('hidden');setTimeout(start,800);},400);}bar.style.width=w+'%';},200);}
         init();
