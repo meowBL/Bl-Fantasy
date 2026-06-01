@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BL Фентези: Покорители Тьмы</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 5px; background: #000; }
+        #loadingScreen { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #0a0010, #150025, #0a0010); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.8s ease; }
+        #loadingScreen.hidden { opacity: 0; pointer-events: none; }
+        #loadingScreen img { max-width: 200px; border-radius: 20px; border: 2px solid #6a306a; box-shadow: 0 0 30px rgba(150,0,150,0.5); margin-bottom: 15px; }
+        .loading-bar-container { width: 180px; height: 8px; background: #1a001a; border: 1px solid #6a306a; border-radius: 8px; overflow: hidden; }
+        .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #8a2080, #c060c0); border-radius: 8px; width: 0%; transition: width 0.3s; }
+        .loading-text { color: #c080c0; margin-top: 10px; font-size: 0.85em; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+        #game { width: 100%; max-width: 500px; min-height: 620px; max-height: 620px; background: rgba(10,0,15,0.92); border: 2px solid #6a306a; border-radius: 18px; padding: 10px; box-shadow: 0 0 40px rgba(150,0,150,0.3); text-align: center; position: relative; z-index: 1; background-size: cover; background-position: center; transition: background-image 0.5s ease; overflow-y: auto; }
+        h1 { color: #c070c0; font-size: 1.2em; margin-bottom: 2px; text-shadow: 0 0 15px #a040a0; }
+        .main-layout { display: flex; align-items: center; justify-content: space-between; gap: 4px; margin: 4px 0; min-height: 280px; }
+        .side-icons { display: flex; flex-direction: column; gap: 6px; align-items: center; width: 65px; }
+        .circle-icon {
+            width: 52px; height: 52px; border-radius: 50%; overflow: hidden;
+            border: 2px solid #8a408a; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.5); background: rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .circle-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .circle-icon:hover { border-color: #b060b0; box-shadow: 0 0 20px rgba(150,0,150,0.7); transform: scale(1.1); }
+        .circle-icon:active { transform: scale(0.9); }
+        .circle-icon.locked { border-color: #444; opacity: 0.5; cursor: not-allowed; }
+        .circle-icon.locked:hover { box-shadow: none; transform: none; border-color: #444; }
+        .circle-icon.locked::after { content: '🔒'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 1.2em; text-shadow: 0 0 5px black; }
+        .center-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .fav-portrait-large { border-radius: 16px; overflow: hidden; border: 3px solid #c08040; box-shadow: 0 0 30px rgba(200,150,50,0.7); max-width: 170px; width: 100%; }
+        .fav-portrait-large img { width: 100%; display: block; }
+        .fav-label { color: #ffffff; font-size: 0.75em; margin-bottom: 4px; text-shadow: 0 0 8px #c08040; font-weight: bold; }
+        .fav-empty { color: #ffffff; font-size: 0.7em; border: 2px dashed #6a4a6a; border-radius: 16px; padding: 25px 10px; max-width: 160px; background: rgba(0,0,0,0.5); }
+        .portrait-container { margin: 6px auto; border-radius: 12px; overflow: hidden; border: 3px solid #6a306a; box-shadow: 0 0 20px rgba(150, 0, 150, 0.5); width: 160px; height: 190px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); }
+        .portrait-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .gift-card { display: inline-block; width: 150px; height: 150px; border-radius: 14px; border: 2px solid #8a6a20; margin: 8px; background: rgba(30,15,5,0.9); text-align: center; overflow: hidden; vertical-align: top; }
+        .gift-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .gift-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #d0a040; font-size: 0.8em; }
+        .gift-placeholder .icon { font-size: 3em; }
+        .gift-ok-card { width: 160px; height: 160px; border-radius: 15px; border: 3px solid #c08040; margin: 8px auto; background: rgba(30,15,5,0.9); overflow: hidden; box-shadow: 0 0 20px rgba(200,150,50,0.5); }
+        .gift-ok-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .book-overlay, .map-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,0,10,0.95); border-radius: 18px; display: flex; flex-direction: column; align-items: center; z-index: 10; padding: 12px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .book-entry { background: rgba(30,10,30,0.9); border: 1px solid #6a306a; border-radius: 10px; padding: 10px; margin: 5px 0; width: 100%; max-width: 400px; text-align: left; color: #d0b0d0; font-size: 0.75em; display: flex; align-items: center; gap: 10px; }
+        .book-entry.locked { opacity: 0.4; }
+        .book-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 2px solid #6a306a; flex-shrink: 0; background: #1a0a1a; min-width: 60px; }
+        .book-info { flex: 1; } .book-info h4 { color: #c080c0; margin-bottom: 3px; font-size: 1em; }
+        .map-level-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; width: 100%; max-width: 340px; flex-shrink: 0; }
+        .map-level-num { width: 32px; height: 32px; border-radius: 50%; background: #2a1a2a; border: 2px solid #6a306a; color: #c0a0c0; font-size: 0.75em; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .map-level-num.done { background: #2a4a2a; border-color: #4a8a4a; color: #a0e0a0; }
+        .map-level-info { flex: 1; font-size: 0.7em; color: #b090b0; }
+        .map-title { color: #c080c0; font-size: 1em; margin-bottom: 6px; flex-shrink: 0; }
+        .map-section-label { color: #c08040; font-size: 0.75em; margin: 5px 0; text-align: center; width: 100%; flex-shrink: 0; }
+        .text-area { background: rgba(20,5,25,0.85); border: 1px solid #6a4a6a; border-radius: 8px; padding: 8px; margin: 3px 0; min-height: 35px; max-height: 100px; overflow-y: auto; font-size: 0.8em; line-height: 1.3; color: #ffffff; text-align: left; font-weight: bold; text-shadow: 1px 1px 2px #000; }
+        .hp-container { margin: 3px 0; } .hp-label { font-size: 0.7em; color: #d0d0d0; text-align: left; margin-bottom: 1px; }
+        .hp-bar { background: rgba(0,0,0,0.6); border: 1px solid #6a306a; border-radius: 6px; height: 18px; overflow: hidden; }
+        .hp-fill { background: linear-gradient(90deg, #cc0044, #ff2266); height: 100%; border-radius: 6px; transition: width 0.3s; display: flex; align-items: center; padding-left: 6px; font-size: 0.6em; color: white; }
+        .enemy-hp-fill { background: linear-gradient(90deg, #cc6600, #ff8800); }
+        .info { color: #d0c0d0; font-size: 0.7em; margin: 2px 0; } hr { border-color: #3a1a3a; margin: 3px 0; }
+        #joystickArea { display: flex; justify-content: center; align-items: center; min-height: 160px; margin: 3px 0; }
+        .joystick-container { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 3px; width: 160px; height: 160px; }
+        .joy-btn { background: linear-gradient(180deg, #5a1a5a, #2a0a2a); color: #e0c0e0; border: 2px solid #8a408a; border-radius: 50%; font-size: 0.65em; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.5); transition: all 0.2s; }
+        .joy-btn:hover { background: linear-gradient(180deg, #7a2a7a, #4a1a4a); border-color: #b060b0; transform: scale(1.05); }
+        .joy-btn:active { transform: scale(0.9); }
+        .joy-center { background: linear-gradient(180deg, #3a0a3a, #1a001a); border: 2px solid #5a205a; border-radius: 50%; font-size: 0.55em; color: #a080a0; display: flex; align-items: center; justify-content: center; }
+        .joy-empty { background: transparent; border: none; }
+        .menu-buttons { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 4px; }
+        .menu-btn { background: linear-gradient(180deg, #5a1a5a, #2a0a2a); color: #e0c0e0; border: 1px solid #8a408a; border-radius: 18px; padding: 6px 10px; font-size: 0.7em; cursor: pointer; transition: all 0.2s; }
+        .menu-btn:hover { background: linear-gradient(180deg, #7a2a7a, #4a1a4a); border-color: #b060b0; }
+        .menu-btn:active { transform: scale(0.95); }
+        .save-slot-btn { background: rgba(30,10,30,0.9); color: #e0d0e0; border: 1px solid #6a306a; border-radius: 10px; padding: 5px; font-size: 0.65em; cursor: pointer; margin: 2px 0; width: 100%; text-align: left; }
+        .save-slot-btn:hover { border-color: #a060a0; }
+        input[type="text"] { background: #1a001a; border: 1px solid #6a306a; border-radius: 6px; color: #d0b0d0; padding: 5px; font-size: 0.7em; width: 100%; margin: 2px 0; text-align: center; }
+        .fav-btn-row { margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+        .tiny-btn { background: linear-gradient(180deg, #4a3a00, #2a1a00); color: #ffffff; border: 1px solid #8a6a20; border-radius: 10px; padding: 4px 8px; font-size: 0.6em; cursor: pointer; font-weight: bold; }
+        .tiny-btn:hover { border-color: #c0a040; }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen">
+        <img src="https://iili.io/C3kf4tV.md.jpg" alt="Загрузка">
+        <div class="loading-bar-container"><div class="loading-bar-fill" id="loadingBar"></div></div>
+        <div class="loading-text">Загрузка...</div>
+    </div>
+    <div id="game">
+        <h1>🔥 BL Фентези 🔥</h1>
+        <div id="portraitArea"></div>
+        <div class="hp-container"><div class="hp-label">❤️ Твоё HP</div><div class="hp-bar"><div class="hp-fill" id="playerHp">100/100</div></div></div>
+        <div class="hp-container" id="enemyHpContainer" style="display:none;"><div class="hp-label">💀 Враг</div><div class="hp-bar"><div class="hp-fill enemy-hp-fill" id="enemyHp">0/0</div></div></div>
+        <div class="info" id="stats">Ур.1 | 💰100 | 🔑0</div>
+        <hr>
+        <div class="text-area" id="text"></div>
+        <div id="joystickArea"></div>
+        <div id="buttons"></div>
+    </div>
+    <script>
+        // ========== КАРТИНКИ ==========
+        const IMG = {
+            guide: "https://iili.io/C3tLNXj.md.jpg", hero: "https://iili.io/C3tbYiJ.md.jpg",
+            kairos: "https://iili.io/C3ekM3Q.md.jpg", zein: "https://iili.io/C3ekAa2.md.jpg", lucian: "https://iili.io/C3eODWG.md.jpg",
+            bgMenu: "https://iili.io/C3kf4tV.md.jpg", bgMonster: "https://iili.io/C3kq1WB.md.jpg",
+            bgKairos: "https://iili.io/C3kBtTv.md.jpg", bgZein: "https://iili.io/C3kCwnp.md.jpg", bgLucian: "https://iili.io/C3kCvcX.md.jpg",
+            slime: "https://iili.io/C3DkYQt.md.jpg", goblin: "https://iili.io/C3Dke6u.md.jpg",
+            wolf: "https://iili.io/C3Dkin1.md.jpg", demon: "https://iili.io/C3DkywN.md.jpg",
+            kingSlime: "https://iili.io/C3DvnN2.md.jpg", goblinChief: "https://iili.io/C3yfBg2.md.jpg",
+            alphaWolf: "https://iili.io/C3phTOB.md.jpg", archdemon: "https://iili.io/C3DvrUG.md.jpg",
+            feather: "https://iili.io/C3pjLCX.jpg", clock: "https://iili.io/C3pwqaj.md.jpg",
+            bouquet: "https://iili.io/C3tbEHN.md.jpg", sword: "https://iili.io/C3tp4Fj.md.jpg",
+            crystal: "https://iili.io/C3tpbMg.md.jpg", potion: "https://iili.io/C3D9d0b.md.jpg",
+            // Иконки кнопок
+            iconMap: "https://iili.io/C3yIxoP.md.png",
+            iconShop: "https://iili.io/C3yIwOl.md.png",
+            iconBook: "https://iili.io/C3yucGt.md.png",
+            iconMonster: "https://iili.io/C3yuQKF.md.jpg",
+            iconElite: "https://iili.io/C3yAdPt.md.jpg",
+            iconBoss: "https://iili.io/C3yAzVS.md.jpg",
+            iconRel: "https://iili.io/C3yA1WB.md.jpg",
+            iconKey: "https://iili.io/C3yAexp.md.jpg"
+        };
+
+        const monsterData = [
+            {name:"Слизень",hp:40,atk:8,coins:8,img:IMG.slime,desc:"Слабое слизистое существо."},
+            {name:"Гоблин",hp:55,atk:12,coins:12,img:IMG.goblin,desc:"Мелкий враг с дубиной."},
+            {name:"Теневой волк",hp:70,atk:16,coins:15,img:IMG.wolf,desc:"Быстрый хищник тьмы."},
+            {name:"Демон",hp:90,atk:20,coins:20,img:IMG.demon,desc:"Огненный демон с рогами."}
+        ];
+        const eliteData = [
+            {name:"Король Слизней",hp:250,atk:45,coins:30,keyChance:0.20,img:IMG.kingSlime,desc:"Огромный слизень."},
+            {name:"Вождь Гоблинов",hp:325,atk:55,coins:35,keyChance:0.25,img:IMG.goblinChief,desc:"Лидер гоблинов."},
+            {name:"Альфа-Волк",hp:400,atk:70,coins:40,keyChance:0.30,img:IMG.alphaWolf,desc:"Вожак стаи."},
+            {name:"Архидемон",hp:500,atk:88,coins:50,keyChance:0.35,img:IMG.archdemon,desc:"Высший демон."}
+        ];
+        const bossData = {
+            "Кайрос":{hp:1800,atk:80,img:IMG.kairos,desc:"Владыка Теней.",ability:"Управление тенями",likes:"Тишину, порядок"},
+            "Зейн":{hp:2000,atk:90,img:IMG.zein,desc:"Огненный Берсерк.",ability:"Огненный удар",likes:"Битвы, честность"},
+            "Люциан":{hp:1500,atk:70,img:IMG.lucian,desc:"Ледяной Принц.",ability:"Ледяной щит",likes:"Поэзию, чай"}
+        };
+        const giftData = {
+            "Люциан": [{img:IMG.bouquet,name:"Букет"},{img:IMG.clock,name:"Часы"}],
+            "Зейн": [{img:IMG.sword,name:"Меч"},{img:IMG.crystal,name:"Кристалл"}],
+            "Кайрос": [{img:IMG.feather,name:"Перо"},{img:IMG.potion,name:"Зелье"}]
+        };
+        const giftPlaceholders = {
+            "Люциан": [["🌸","Букет"],["⏰","Часы"]], "Зейн": [["⚔️","Меч"],["💎","Кристалл"]], "Кайрос": [["🪶","Перо"],["🧪","Зелье"]]
+        };
+        const dates = {
+            "Люциан": {1:{t:"Вы гуляете по ледяному саду. Люциан показывает цветы изо льда.\n\n«Я создал их, думая о ком-то... особенном.»",img:IMG.lucian},2:{t:"Люциан кормит тебя мороженым.\n\n«Никто никогда не делал этого со мной...»",img:IMG.lucian}},
+            "Зейн": {1:{t:"Прогулка у вулкана. Ты оступаешься — Зейн ловит тебя.\n\n«Осторожно, мелочь!»",img:IMG.zein},2:{t:"Зейн у костра: «Меня никто не любил... пока не встретил тебя.»",img:IMG.zein}},
+            "Кайрос": {1:{t:"Вы молча гуляете по тронному залу. Кайрос изредка улыбается.",img:IMG.kairos},2:{t:"Кайрос прикрывает тебя в бою.\n\n«Ты... стоишь того.»",img:IMG.kairos}}
+        };
+        const finalScenes = {
+            "Кайрос": "Кайрос садится рядом. «Ты завоевал меня. Я не хочу быть один.» Вы целуетесь.",
+            "Зейн": "Зейн притягивает тебя. «Я счастлив.» Вы обнимаетесь.",
+            "Люциан": "Люциан у окна. «Я боялся...» Ты берёшь его за руку. «Ты — мой.»"
+        };
+        const bossImages = { "Кайрос": IMG.kairos, "Зейн": IMG.zein, "Люциан": IMG.lucian };
+        const bgImages = { "menu": IMG.bgMenu, "monster": IMG.bgMonster, "elite": IMG.bgMonster, "Кайрос": IMG.bgKairos, "Зейн": IMG.bgZein, "Люциан": IMG.bgLucian };
+
+        let player = {name:"Герой",level:1,wins:0,maxHp:100,hp:100,attack:15,defense:8,coins:100,keys:0,cards:[],conquered:[],favorite:null,introDone:false};
+        let bosses = {"Кайрос":{defeated:false,rel:0,dateCount:0},"Зейн":{defeated:false,rel:0,dateCount:0},"Люциан":{defeated:false,rel:0,dateCount:0}};
+        let currentBoss=null,enemyHp=0,enemyMaxHp=0,enemyAttack=0,enemyName="",battleType="",keyChance=0,bossPhase=1,phaseThreshold=0;
+        let defeatedMonsters=[],defeatedElites=[],defeatedBosses=[];
+
+        function canFightElite(){return player.level>=11;} function canFightBoss(){return player.level>=21;}
+        function addWin(){player.wins++;if(player.wins>=3){player.wins=0;player.level++;player.maxHp+=20;player.hp=player.maxHp;player.attack+=5;player.defense+=3;addText('🎉 УРОВЕНЬ '+player.level+'!');if(player.level===11)addText('🗺️ Элита!');if(player.level===21)addText('👑 Боссы!');}else{addText('⭐ До уровня: '+(3-player.wins)+'/3');}updateUI();}
+        function setBg(k){let g=document.getElementById('game');g.style.backgroundImage=bgImages[k]?'url('+bgImages[k]+')':'none';if(!bgImages[k])g.style.background='rgba(10,0,15,0.92)';}
+        function showImg(url){document.getElementById('portraitArea').innerHTML=url?'<div class="portrait-container"><img src="'+url+'" alt="" onerror="this.parentElement.innerHTML=\'<div style=color:#888;font-size:0.7em;padding:20px>🖼️</div>\'"></div>':'';}
+        function hidePortrait(){document.getElementById('portraitArea').innerHTML='';}
+        function clearJoystick(){document.getElementById('joystickArea').innerHTML='';}
+        function updateUI(){let p=Math.max(1,player.hp/player.maxHp*100);document.getElementById('playerHp').style.width=p+'%';document.getElementById('playerHp').textContent='HP: '+player.hp+'/'+player.maxHp;document.getElementById('stats').textContent='Ур.'+player.level+' | 💰'+player.coins+' | 🔑'+player.keys+' | ⭐'+(3-player.wins)+'/3';}
+        function updateEnemyBar(){let b=document.getElementById('enemyHp'),c=document.getElementById('enemyHpContainer');if(enemyHp>0){c.style.display='block';let p=Math.max(1,enemyHp/enemyMaxHp*100);b.style.width=p+'%';b.textContent=enemyName+': '+enemyHp+'/'+enemyMaxHp;}else{c.style.display='none';}}
+        function hideEnemyBar(){document.getElementById('enemyHpContainer').style.display='none';}
+        function setText(msg){document.getElementById('text').innerHTML=msg;}
+        function addText(msg){document.getElementById('text').innerHTML+='<br>'+msg;document.getElementById('text').scrollTop=document.getElementById('text').scrollHeight;}
+        function setButtonsHTML(html){document.getElementById('buttons').innerHTML=html;}
+        function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;} function chance(prob){return Math.random()<prob;}
+
+        function introScene(){clearJoystick();setBg('menu');hideEnemyBar();updateUI();showImg(IMG.guide);setText('✨ Искра: «Проснись!»');setButtons([{text:'...Где я?',action:introStep2}]);}
+        function introStep2(){showImg(IMG.hero);setText('Ты открываешь глаза. Над тобой парит светящееся существо.');addText('✨ Искра: «Ты в Аркании! Трое существ наполнили его хаосом. Только ты можешь всё исправить, '+player.name+'!»');setButtons([{text:'Я хочу домой!',action:introStep3},{text:'Что за бред?!',action:introStep3},{text:'Расскажи.',action:introStep3}]);}
+        function introStep3(){showImg(IMG.guide);setText('✨ Искра: «Домой? Ну уж нет! Ты Избранный! Я твой проводник.»');setButtons([{text:'Ладно...',action:introDone}]);}
+        function introDone(){player.introDone=true;hidePortrait();setText('✨ Искра: «Осмотрись!»');setButtons([{text:'Вперёд!',action:mainMenu}]);}
+
+        // ========== ГЛАВНОЕ МЕНЮ С НОВЫМИ ИКОНКАМИ ==========
+        function mainMenu(){clearJoystick();hideEnemyBar();hidePortrait();setBg('menu');enemyHp=0;updateUI();if(!player.introDone){introScene();return;}setText('✨ Искра: «Куда, '+player.name+'?»');
+            let l='<div class="side-icons">';
+            l+='<button class="circle-icon" onclick="showMap()"><img src="'+IMG.iconMap+'" alt="Карта"></button>';
+            l+='<button class="circle-icon" onclick="showBook()"><img src="'+IMG.iconBook+'" alt="Книга"></button>';
+            l+='<button class="circle-icon" onclick="startMonster()"><img src="'+IMG.iconMonster+'" alt="Монстры"></button>';
+            l+=canFightElite()?'<button class="circle-icon" onclick="startElite()"><img src="'+IMG.iconElite+'" alt="Элита"></button>':'<button class="circle-icon locked"><img src="'+IMG.iconElite+'" alt="Элита"></button>';
+            l+=canFightBoss()?'<button class="circle-icon" onclick="chooseBoss()"><img src="'+IMG.iconBoss+'" alt="Боссы"></button>':'<button class="circle-icon locked"><img src="'+IMG.iconBoss+'" alt="Боссы"></button>';
+            l+='</div>';
+            let r='<div class="side-icons">';
+            r+='<button class="circle-icon" onclick="chooseRel()"><img src="'+IMG.iconRel+'" alt="Отношения"></button>';
+            r+='<button class="circle-icon" onclick="shop()"><img src="'+IMG.iconShop+'" alt="Магазин"></button>';
+            r+='<button class="circle-icon" onclick="openChest()"><img src="'+IMG.iconKey+'" alt="Ключи"></button>';
+            r+='</div>';
+            let c='<div class="center-area">'+(player.favorite&&bossImages[player.favorite]?'<div class="fav-label">⭐ '+player.favorite+' ⭐</div><div class="fav-portrait-large"><img src="'+bossImages[player.favorite]+'" alt=""></div><div class="fav-btn-row"><button class="tiny-btn" onclick="setFav()">🔄</button></div>':'<div class="fav-empty">⭐<br>ПОБЕДИ БОССА</div>')+'</div>';
+            setButtonsHTML('<div class="main-layout">'+l+c+r+'</div><div class="menu-buttons"><button class="menu-btn" onclick="saveMenu()">💾</button><button class="menu-btn" onclick="loadMenu()">📂</button><button class="menu-btn" onclick="stats()">📊</button><button class="menu-btn" onclick="newGameConfirm()">🆕</button></div>');}
+
+        function showMap(){clearJoystick();let h='<div class="map-overlay"><div class="map-title">🗺️ КАРТА</div>';h+='<div class="map-section-label">Боссы (21-30)</div>';for(let i=30;i>=21;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<div class="map-section-label">Элита (11-20)</div>';for(let i=20;i>=11;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<div class="map-section-label">Монстры (1-10)</div>';for(let i=10;i>=1;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);setTimeout(()=>{let o=document.querySelector('.map-overlay');if(o)o.scrollTop=o.scrollHeight;},100);}
+
+        function showBook(){clearJoystick();let h='<div class="book-overlay"><div style="color:#c080c0;font-size:1em;">📖 БЕСТИАРИЙ</div>';h+='<div class="map-section-label">Монстры</div>';monsterData.forEach(m=>{let k=defeatedMonsters.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';});h+='<div class="map-section-label">Элита</div>';eliteData.forEach(m=>{let k=defeatedElites.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';});h+='<div class="map-section-label">Боссы</div>';for(let n in bossData){let m=bossData[n],k=defeatedBosses.includes(n);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img" onerror="this.style.display=\'none\'"><div class="book-info"><h4>'+(k?n:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>'+m.desc:'Победите')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
+
+        function setFav(){let c=player.conquered;if(c.length===0)return;let b=c.map(x=>({text:x,action:()=>{player.favorite=x;mainMenu();}}));b.push({text:'Убрать',action:()=>{player.favorite=null;mainMenu();}});setText('Выбери:');setButtons(b);}
+
+        function startBattle(n,hp,atk,type,kch,cr,img){hideEnemyBar();hidePortrait();enemyName=n;enemyHp=hp;enemyMaxHp=hp;enemyAttack=atk;battleType=type;keyChance=kch||0;updateEnemyBar();if(img)showImg(img);setBg(type==='boss'?n:(type==='elite'?'elite':'monster'));setText((type==='boss'?'👑 ':(type==='elite'?'💀 ':'⚔️ '))+n);joy(cr);}
+        function startMonster(){let m=monsterData[Math.floor(Math.random()*4)];startBattle(m.name,m.hp,m.atk,'monster',0,m.coins,m.img);}
+        function startElite(){if(!canFightElite()){setText('🔒 11 ур.');setButtons([{text:'Назад',action:mainMenu}]);return;}let m=eliteData[Math.floor(Math.random()*4)];startBattle(m.name,m.hp,m.atk,'elite',m.keyChance,m.coins,m.img);}
+        function joy(cr){updateUI();updateEnemyBar();let h='<div class="joystick-container"><div class="joy-empty"></div><button class="joy-btn" onclick="atk('+cr+')">⚔️</button><div class="joy-empty"></div>';h+='<button class="joy-btn" onclick="satk('+cr+')">💥</button><div class="joy-center">🛡️</div><button class="joy-btn" onclick="flee()">🏃</button>';h+='<div class="joy-empty"></div><button class="joy-btn" onclick="def('+cr+')">🛡️</button><div class="joy-empty"></div></div>';document.getElementById('joystickArea').innerHTML=h;document.getElementById('buttons').innerHTML='';}
+        function atk(cr){let d=Math.max(1,player.attack+rand(-3,5));enemyHp-=d;addText('⚔️ -'+d);updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
+        function satk(cr){if(chance(0.7)){let d=Math.max(1,player.attack*2);enemyHp-=d;addText('💥 -'+d);}else{addText('💨 Промах!');}updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
+        function def(cr){player.defense+=5;addText('🛡️ +5');eturn(cr);}
+        function flee(){if(chance(0.5)){addText('🏃 Сбежал!');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();}else{addText('Не вышло!');eturn(0);}}
+        function eturn(cr){let d=Math.max(1,enemyAttack+rand(-2,4)-player.defense);player.hp-=d;addText('💢 '+enemyName+' -'+d);updateUI();if(player.hp<=0){player.hp=Math.floor(player.maxHp/2);addText('💀 Поражение...');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();return;}joy(cr);}
+        function win(cr){addText('🎉 ПОБЕДА!');addWin();if(cr>0){player.coins+=cr;addText('💰 +'+cr);}if(battleType==='monster'&&!defeatedMonsters.includes(enemyName))defeatedMonsters.push(enemyName);if(battleType==='elite'&&!defeatedElites.includes(enemyName))defeatedElites.push(enemyName);if(battleType==='boss'&&!defeatedBosses.includes(enemyName))defeatedBosses.push(enemyName);if(battleType==='elite'&&chance(keyChance)&&player.cards.length<3){player.keys++;addText('✨ КЛЮЧ! Всего:'+player.keys);}clearJoystick();hideEnemyBar();if(battleType!=='boss')hidePortrait();enemyHp=0;updateUI();setButtons([{text:'Продолжить',action:mainMenu}]);}
+
+        function openChest(){clearJoystick();if(player.keys<=0){setText('Нет ключей!');setButtons([{text:'Назад',action:mainMenu}]);return;}player.keys--;let av=['Кайрос','Зейн','Люциан'].filter(b=>!player.cards.includes(b));if(av.length===0){player.keys++;setText('Все карты есть!');setButtons([{text:'Назад',action:mainMenu}]);return;}let obt=av[Math.floor(Math.random()*av.length)];player.cards.push(obt);showImg(bossImages[obt]);setBg(obt);setText('🗝️ Сундук!<br>🎴 '+obt+'!');updateUI();setButtons([{text:'OK',action:mainMenu}]);}
+
+        function chooseBoss(){clearJoystick();if(!canFightBoss()){setText('🔒 21 ур.');setButtons([{text:'Назад',action:mainMenu}]);return;}let avail=player.cards.filter(b=>!bosses[b].defeated);if(avail.length===0){setText('Все боссы побеждены!');setButtons([{text:'Назад',action:mainMenu}]);return;}let btns=avail.map(x=>({text:x,action:()=>bossBattle(x)}));btns.push({text:'Назад',action:mainMenu});setText('Выбери:');setButtons(btns);}
+        function bossBattle(n){currentBoss=n;player.hp=player.maxHp;bossPhase=1;let d=bossData[n];enemyName=n;enemyHp=d.hp;enemyMaxHp=d.hp;enemyAttack=d.atk;phaseThreshold=Math.floor(d.hp*0.5);battleType='boss';setBg(n);showImg(d.img);updateEnemyBar();setText('👑 '+n);bossJoy();}
+        function bossJoy(){updateUI();updateEnemyBar();let h='<div class="joystick-container"><div class="joy-empty"></div><button class="joy-btn" onclick="bAtk()">⚔️</button><div class="joy-empty"></div>';h+='<button class="joy-btn" onclick="bAtk()">⚔️</button><div class="joy-center">👑</div><button class="joy-btn" onclick="bHeal()">💚</button>';h+='<div class="joy-empty"></div><button class="joy-btn" onclick="bDodge()">💨</button><div class="joy-empty"></div></div>';document.getElementById('joystickArea').innerHTML=h;document.getElementById('buttons').innerHTML='';}
+        function bAtk(){let d=Math.max(1,player.attack+rand(-5,8));enemyHp-=d;addText('⚔️ -'+d);updateEnemyBar();if(enemyHp<=0){bWin();return;}bTurn();}
+        function bDodge(){if(chance(0.6)){let d=Math.max(1,Math.floor(player.attack*1.5));enemyHp-=d;addText('💨 -'+d);}else{addText('Не вышло!');}updateEnemyBar();if(enemyHp<=0){bWin();return;}bTurn();}
+        function bHeal(){player.hp=Math.min(player.maxHp,player.hp+25);addText('💚 +25');updateUI();bTurn();}
+        function bTurn(){let d=Math.max(1,enemyAttack+rand(-5,15)-player.defense);player.hp-=d;addText('💢 '+currentBoss+' -'+d);updateUI();if(enemyHp<=phaseThreshold&&bossPhase===1){bossPhase=2;enemyAttack+=15;addText('⚡ Ярость!');}if(player.hp<=0){player.hp=Math.floor(player.maxHp/2);addText('💀 Поражение...');clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;mainMenu();return;}bossJoy();}
+        function bWin(){addText('🎉 ПОБЕДА!');bosses[currentBoss].defeated=true;if(!player.conquered.includes(currentBoss))player.conquered.push(currentBoss);if(!player.favorite)player.favorite=currentBoss;if(!defeatedBosses.includes(currentBoss))defeatedBosses.push(currentBoss);addWin();player.coins+=80;addText('+80💰');clearJoystick();hideEnemyBar();enemyHp=0;updateUI();setButtons([{text:'Продолжить',action:mainMenu}]);}
+
+        function chooseRel(){clearJoystick();if(player.conquered.length===0){setText('Победи босса!');setButtons([{text:'Назад',action:mainMenu}]);return;}let b=player.conquered.map(x=>({text:x+' (ур.'+Math.min(5,Math.floor(bosses[x].rel/100)+1)+')',action:()=>relMenu(x)}));b.push({text:'Назад',action:mainMenu});setText('💕 Отношения:');setButtons(b);}
+        function relMenu(n){clearJoystick();setBg(n);showImg(bossImages[n]);let b=bosses[n],lvl=Math.min(5,Math.floor(b.rel/100)+1);let msg='💕 '+n+' | Ур.'+lvl+'/5 | '+b.rel+'/'+(lvl*100);if(b.rel>=500)msg+='\n❤️ Макс!';setText(msg);updateUI();let btns=[];btns.push({text:'💬 Поговорить (30💰, +5)',action:()=>relAct(n,'talk')});btns.push({text:'🤝 Прикоснуться (50💰, +10)',action:()=>relAct(n,'touch')});btns.push({text:'🎁 Подарок (80💰, +20)',action:()=>relGift(n)});if(lvl>=4&&b.dateCount<2)btns.push({text:'💖 Свидание (150💰, +50)',action:()=>relDate(n)});if(b.rel>=500&&b.dateCount>=2)btns.push({text:'🌙 Интимная сцена',action:()=>relFinal(n)});if(player.favorite===n){btns.push({text:'💔 Убрать из избранного',action:()=>{player.favorite=null;setText('💔 '+n+' больше не избранный.');updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}});}else{btns.push({text:'❤️ В избранное',action:()=>{player.favorite=n;setText('❤️ '+n+' теперь избранный!');updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}});}btns.push({text:'Назад',action:chooseRel});setButtons(btns);}
+        function relAct(n,t){let c={talk:30,touch:50},g={talk:5,touch:10};if(player.coins<c[t]){setText('Нужно '+c[t]+'💰!');setButtons([{text:'Назад',action:()=>relMenu(n)}]);return;}player.coins-=c[t];bosses[n].rel=Math.min(500,bosses[n].rel+g[t]);setText((t==='talk'?'Вы поговорили.':'Ты коснулся его.')+' +'+g[t]+' (-'+c[t]+'💰)');updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}
+        function relGift(n){clearJoystick();if(player.coins<80){setText('Нужно 80💰!');setButtons([{text:'Назад',action:()=>relMenu(n)}]);return;}let g=giftData[n],ph=giftPlaceholders[n];let h='🎁 ВЫБЕРИ ПОДАРОК<br><br>';h+='<div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">';h+='<div style="text-align:center;"><div class="gift-card"><img src="'+g[0].img+'" onerror="this.parentElement.innerHTML=\'<div class=gift-placeholder><span class=icon>'+ph[0][0]+'</span>'+ph[0][1]+'</div>\'"></div><br>'+g[0].name+'<br><button class="menu-btn" onclick="relGiftOk(\''+n+'\',0)">Выбрать</button></div>';h+='<div style="text-align:center;"><div class="gift-card"><img src="'+g[1].img+'" onerror="this.parentElement.innerHTML=\'<div class=gift-placeholder><span class=icon>'+ph[1][0]+'</span>'+ph[1][1]+'</div>\'"></div><br>'+g[1].name+'<br><button class="menu-btn" onclick="relGiftOk(\''+n+'\',1)">Выбрать</button></div>';h+='</div><br><button class="menu-btn" onclick="relMenu(\''+n+'\')">Назад</button>';setText(h);setButtonsHTML('');}
+        function relGiftOk(n,idx){player.coins-=80;bosses[n].rel=Math.min(500,bosses[n].rel+20);let g=giftData[n][idx],ph=giftPlaceholders[n][idx];let h='🎁 Подарок вручён!<br><br><div class="gift-ok-card"><img src="'+g.img+'" onerror="this.innerHTML=\'<div class=gift-placeholder style=width:160px;height:160px><span class=icon style=font-size:3em>'+ph[0]+'</span>'+ph[1]+'</div>\'"></div><br>'+g.name+'<br><br>+20 очков! (-80💰)';setText(h);updateUI();setButtons([{text:'OK',action:()=>relMenu(n)}]);}
+        function relDate(n){if(player.coins<150){setText('Нужно 150💰!');setButtons([{text:'Назад',action:()=>relMenu(n)}]);return;}player.coins-=150;bosses[n].rel=Math.min(500,bosses[n].rel+50);bosses[n].dateCount++;let d=dates[n][bosses[n].dateCount];setBg(n);showImg(d.img);setText('💖 СВИДАНИЕ #'+bosses[n].dateCount+'\n\n'+d.t+'\n\n+50 очков!');updateUI();setButtons([{text:'Прекрасно...',action:()=>relMenu(n)}]);}
+        function relFinal(n){setBg(n);showImg(bossImages[n]);setText('🌙 БЛИЗОСТЬ\n\n'+finalScenes[n]);setButtons([{text:'❤️',action:()=>relMenu(n)}]);}
+
+        function shop(){clearJoystick();setBg('menu');setText('🏪 | 💰'+player.coins);setButtons([{text:'🧪 +50 HP (80💰)',action:()=>{if(player.coins>=80){player.coins-=80;player.hp=Math.min(player.maxHp,player.hp+50);}shop();}},{text:'⚗️ +10 Атк (120💰)',action:()=>{if(player.coins>=120){player.coins-=120;player.attack+=10;}shop();}},{text:'Назад',action:mainMenu}]);}
+        function stats(){clearJoystick();setBg('menu');let m='📊 СТАТЫ\nУр.'+player.level+' | HP:'+player.maxHp+' | Атк:'+player.attack+' | Защ:'+player.defense+'\n💰'+player.coins+' | 🔑'+player.keys+'\n\n';if(player.conquered.length>0){m+='👑 БОССЫ:\n';player.conquered.forEach(b=>{let bi=bossData[b];m+=b+': '+bi.desc+'\nСпособность: '+bi.ability+'\nЛюбит: '+bi.likes+'\nОтношения: '+bosses[b].rel+'/500\n\n';});}setText(m);setButtons([{text:'Назад',action:mainMenu}]);}
+
+        function getSaves(){let s=localStorage.getItem('blFantasySaves');return s?JSON.parse(s):{};}
+        function saveSaves(s){localStorage.setItem('blFantasySaves',JSON.stringify(s));}
+        function saveMenu(){clearJoystick();let s=getSaves(),h='💾 СОХРАНИТЬ<br><br>';for(let i=1;i<=3;i++)h+='<button class="save-slot-btn" onclick="saveSlot('+i+')">Слот '+i+': '+(s['slot'+i]?s['slot'+i].name:'Пусто')+'</button>';h+='<br><button class="menu-btn" onclick="mainMenu()">Назад</button>';setText(h);setButtonsHTML('');}
+        function saveSlot(n){let nm=prompt('Название:','Слот '+n);if(!nm)return;let s=getSaves();s['slot'+n]={name:nm,player:JSON.parse(JSON.stringify(player)),bosses:JSON.parse(JSON.stringify(bosses)),dM:[...defeatedMonsters],dE:[...defeatedElites],dB:[...defeatedBosses]};saveSaves(s);setText('💾 '+nm);setButtons([{text:'OK',action:mainMenu}]);}
+        function loadMenu(){clearJoystick();let s=getSaves(),h='📂 ЗАГРУЗИТЬ<br><br>',a=false;for(let i=1;i<=3;i++){if(s['slot'+i]){a=true;h+='<button class="save-slot-btn" onclick="loadSlot('+i+')">Слот '+i+': '+s['slot'+i].name+'</button>';}else h+='<div class="save-slot-btn" style="color:#504050;">Слот '+i+': Пусто</div>';}if(!a)h+='<br>Нет сохранений!';h+='<br><button class="menu-btn" onclick="mainMenu()">Назад</button>';setText(h);setButtonsHTML('');}
+        function loadSlot(n){let s=getSaves()['slot'+n];if(!s)return;player=s.player;bosses=s.bosses;defeatedMonsters=s.dM||[];defeatedElites=s.dE||[];defeatedBosses=s.dB||[];player.introDone=true;setText('📂 '+s.name);updateUI();setButtons([{text:'Играть',action:mainMenu}]);}
+        function newGameConfirm(){clearJoystick();setText('⚠️ Начать новую игру?');setButtons([{text:'✅ Да',action:newGame},{text:'❌ Нет',action:mainMenu}]);}
+
+        function start(){clearJoystick();let s=getSaves(),has=Object.keys(s).length>0;setBg('menu');updateUI();if(has){setText('📂 Сохранения найдены.');setButtons([{text:'📂 Загрузить',action:loadMenu},{text:'🆕 Новая',action:newGameConfirm}]);}else{setText('🔥 BL ФЕНТЕЗИ 🔥');setButtons([{text:'Начать',action:newGame}]);}}
+        function newGame(){player={name:prompt('Имя героя:','Герой')||'Герой',level:1,wins:0,maxHp:100,hp:100,attack:15,defense:8,coins:100,keys:0,cards:[],conquered:[],favorite:null,introDone:false};bosses={"Кайрос":{defeated:false,rel:0,dateCount:0},"Зейн":{defeated:false,rel:0,dateCount:0},"Люциан":{defeated:false,rel:0,dateCount:0}};defeatedMonsters=[];defeatedElites=[];defeatedBosses=[];setText('⚡ '+player.name+', добро пожаловать!');updateUI();setButtons([{text:'Вперёд!',action:()=>{player.introDone?mainMenu():introScene();}}]);}
+        function setButtons(btns){let d=document.getElementById('buttons');d.innerHTML='';d.className='menu-buttons';btns.forEach(b=>{let x=document.createElement('button');x.textContent=b.text;x.onclick=b.action;x.className='menu-btn';d.appendChild(x);});}
+        function init(){let bar=document.getElementById('loadingBar'),w=0;let iv=setInterval(()=>{w+=Math.floor(Math.random()*15)+5;if(w>=100){w=100;clearInterval(iv);setTimeout(()=>{document.getElementById('loadingScreen').classList.add('hidden');setTimeout(start,800);},400);}bar.style.width=w+'%';},200);}
+        init();
+    </script>
+</body>
+</html>
