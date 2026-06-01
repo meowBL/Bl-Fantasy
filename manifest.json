@@ -1,0 +1,15 @@
+{
+  "name": "BL Фентези",
+  "short_name": "BL Фентези",
+  "start_url": "/Bl-Fantasy/",
+  "display": "standalone",
+  "background_color": "#1a0a2a",
+  "theme_color": "#6a306a",
+  "icons": [
+    {
+      "src": "https://iili.io/C3ekM3Q.md.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
