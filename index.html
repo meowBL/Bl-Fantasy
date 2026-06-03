@@ -19,10 +19,11 @@
         h1 { color: #c070c0; font-size: 1.1em; margin-bottom: 2px; text-shadow: 0 0 15px #a040a0; }
         .main-layout { display: flex; align-items: center; justify-content: space-between; gap: 4px; margin: 4px 0; min-height: 300px; }
         .side-icons { display: flex; flex-direction: column; gap: 6px; align-items: center; width: 65px; }
-        .circle-icon { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #8a408a; cursor: pointer; transition: all 0.2s; box-shadow: 0 3px 8px rgba(0,0,0,0.5); background: #1a0a2a; display: flex; align-items: center; justify-content: center; font-size: 1.4em; }
+        .circle-icon { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #8a408a; cursor: pointer; transition: all 0.2s; box-shadow: 0 3px 8px rgba(0,0,0,0.5); background: #1a0a2a; position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.4em; }
         .circle-icon:hover { border-color: #b060b0; box-shadow: 0 0 20px rgba(150,0,150,0.7); transform: scale(1.1); }
         .circle-icon:active { transform: scale(0.9); }
         .circle-icon.locked { border-color: #444; opacity: 0.5; cursor: not-allowed; }
+        .circle-icon.locked:hover { box-shadow: none; transform: none; border-color: #444; }
         .center-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .fav-portrait-large { border-radius: 16px; overflow: hidden; border: 3px solid #c08040; box-shadow: 0 0 30px rgba(200,150,50,0.7); max-width: 160px; width: 100%; }
         .fav-portrait-large img { width: 100%; display: block; }
@@ -66,6 +67,7 @@
         .joy-btn { background: linear-gradient(180deg, #5a1a5a, #2a0a2a); color: #e0c0e0; border: 2px solid #8a408a; border-radius: 50%; font-size: 0.6em; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .joy-btn:hover { background: linear-gradient(180deg, #7a2a7a, #4a1a4a); border-color: #b060b0; transform: scale(1.05); }
         .joy-btn:active { transform: scale(0.9); }
+        .joy-center { background: linear-gradient(180deg, #3a0a3a, #1a001a); border: 2px solid #5a205a; border-radius: 50%; font-size: 0.55em; color: #a080a0; display: flex; align-items: center; justify-content: center; }
         .joy-empty { background: transparent; border: none; }
         .menu-buttons { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 4px; }
         .menu-btn { background: linear-gradient(180deg, #5a1a5a, #2a0a2a); color: #e0c0e0; border: 1px solid #8a408a; border-radius: 18px; padding: 5px 8px; font-size: 0.65em; cursor: pointer; }
@@ -74,7 +76,7 @@
         .fav-btn-row { margin-top: 4px; display: flex; gap: 4px; }
         .tiny-btn { background: linear-gradient(180deg, #4a3a00, #2a1a00); color: #ffffff; border: 1px solid #8a6a20; border-radius: 10px; padding: 4px 8px; font-size: 0.6em; cursor: pointer; }
         .key-notify { animation: keyPop 0.5s ease; color: #ffd700; font-size: 1.2em; }
-        .achieve-popup { animation: achievePop 1s ease; color: #ffd700; font-size: 1.1em; }
+        .achieve-popup { animation: achievePop 1s ease; color: #ffd700; font-size: 1.1em; text-shadow: 0 0 15px #ffd700; }
         @keyframes keyPop { 0%{transform:scale(0.5);opacity:0;} 50%{transform:scale(1.3);} 100%{transform:scale(1);opacity:1;} }
         @keyframes achievePop { 0%{transform:scale(0.3);opacity:0;} 50%{transform:scale(1.2);} 100%{transform:scale(1);opacity:1;} }
     </style>
@@ -96,6 +98,7 @@
         <div id="joystickArea"></div>
         <div id="buttons"></div>
     </div>
+
     <audio id="bgMusic" loop preload="auto"><source src="https://meowbl.github.io/Bl-Fantasy/game.mp3" type="audio/mpeg"></audio>
     <audio id="dateMusic" loop preload="auto"><source src="https://meowbl.github.io/Bl-Fantasy/game%20(2).mp3" type="audio/mpeg"></audio>
 
@@ -112,25 +115,59 @@
             bouquet: "https://iili.io/C3tbEHN.md.jpg", clock: "https://iili.io/C3pwqaj.md.jpg",
             sword: "https://iili.io/C3tp4Fj.md.jpg", crystal: "https://iili.io/C3tpbMg.md.jpg",
             feather: "https://iili.io/C3pjLCX.jpg", potion: "https://iili.io/C3D9d0b.md.jpg",
+            iconBook: "https://iili.io/C3yucGt.md.png",
             chest: GH+"9d25299f1b283572affbe8ae57e1e517.jpg",
-            bgCave: GH+"318522a24c83cae591de6b96913f8f57.jpg", bgSea: GH+"45950d7909118561ee099eeee128ad7b.jpg",
+            bgCave: GH+"318522a24c83cae591de6b96913f8f57.jpg",
+            bgVolcanoEdge: GH+"3b34a054a063fe03681e42d5845e1721.jpg",
+            bgSea: GH+"45950d7909118561ee099eeee128ad7b.jpg",
+            bgCampfire: GH+"5fb99d14eace24b5e72df031377015a8.jpg",
             bgForest: GH+"673054e3236780d20fde57a83233babb.jpg",
-            bgVolcanoEdge: GH+"3b34a054a063fe03681e42d5845e1721.jpg", bgCampfire: GH+"5fb99d14eace24b5e72df031377015a8.jpg",
-            bgIceGarden: GH+"af5b885c4d70d396c634a556764a7aa9%20(1).jpg", bgCozyRoom: GH+"daa6ebec23fa78dd2a8c55085f7efa99.jpg",
+            bgIceGarden: GH+"af5b885c4d70d396c634a556764a7aa9%20(1).jpg",
+            bgCozyRoom: GH+"daa6ebec23fa78dd2a8c55085f7efa99.jpg",
             bgBattlefield: GH+"f53fef03fc45111166c30a204c1611d5.jpg",
             bgShadowForest: "https://iili.io/CFjKar7.md.jpg", bgMountain: "https://iili.io/CFjf3ve.md.jpg",
             bgShore: "https://iili.io/CFjf5ua.md.jpg", bgTemple: "https://iili.io/CFjfM8X.md.jpg",
             monsterBoar: "https://iili.io/CFjfsMQ.md.jpg", monsterGolem: "https://iili.io/CFjqFKN.md.jpg",
             monsterDrowned: "https://iili.io/CFjqBHX.md.jpg", monsterGuardian: "https://iili.io/CFjqAf2.md.jpg"
         };
-        const monsterData = [{name:"Слизень",hp:40,atk:8,coins:8,img:IMG.slime},{name:"Гоблин",hp:55,atk:12,coins:12,img:IMG.goblin},{name:"Теневой волк",hp:70,atk:16,coins:15,img:IMG.wolf},{name:"Демон",hp:90,atk:20,coins:20,img:IMG.demon}];
-        const eliteData = [{name:"Король Слизней",hp:500,atk:70,coins:30,img:IMG.kingSlime},{name:"Вождь Гоблинов",hp:650,atk:85,coins:35,img:IMG.goblinChief},{name:"Альфа-Волк",hp:800,atk:100,coins:40,img:IMG.alphaWolf},{name:"Архидемон",hp:1000,atk:120,coins:50,img:IMG.archdemon}];
-        const bossData = {"Кайрос":{hp:5000,atk:150,img:IMG.kairos},"Зейн":{hp:6000,atk:170,img:IMG.zein},"Люциан":{hp:4500,atk:140,img:IMG.lucian}};
-        const locations = [{name:"Лес Теней",bg:IMG.bgShadowForest,monster:{name:"Теневой Вепрь",hp:300,atk:50,coins:40,img:IMG.monsterBoar}},{name:"Горный Перевал",bg:IMG.bgMountain,monster:{name:"Каменный Страж",hp:400,atk:60,coins:50,img:IMG.monsterGolem}},{name:"Берег Забвения",bg:IMG.bgShore,monster:{name:"Глубинный Утопленник",hp:350,atk:55,coins:45,img:IMG.monsterDrowned}},{name:"Заброшенный Храм",bg:IMG.bgTemple,monster:{name:"Древний Хранитель",hp:450,atk:65,coins:55,img:IMG.monsterGuardian}}];
-        const giftData = {"Люциан":[{img:IMG.bouquet,name:"Букет"},{img:IMG.clock,name:"Часы"}],"Зейн":[{img:IMG.sword,name:"Меч"},{img:IMG.crystal,name:"Кристалл"}],"Кайрос":[{img:IMG.feather,name:"Перо"},{img:IMG.potion,name:"Зелье"}]};
-        const dates = {"Люциан":{1:{t:"Вы гуляете по ледяному саду.\n\n«Я создал эти цветы, думая о ком-то особенном...»",img:IMG.lucian,bg:IMG.bgIceGarden},2:{t:"Люциан приносит мороженое.\n\n«Попробуй... это моё любимое.»",img:IMG.lucian,bg:IMG.bgCozyRoom}},"Зейн":{1:{t:"Прогулка у вулкана. Ты оступаешься — Зейн ловит тебя.\n\n«Осторожно, мелочь!»",img:IMG.zein,bg:IMG.bgVolcanoEdge},2:{t:"Зейн у костра: «Меня никто не любил... пока не встретил тебя.»",img:IMG.zein,bg:IMG.bgCampfire}},"Кайрос":{1:{t:"Вы молча гуляете по тронному залу. Кайрос улыбается.",img:IMG.kairos,bg:IMG.bgKairos},2:{t:"Кайрос прикрывает тебя в бою.\n\n«Ты... стоишь того.»",img:IMG.kairos,bg:IMG.bgBattlefield}}};
-        const finalScenes = {"Кайрос":"Кайрос садится рядом. «Ты завоевал меня. Я не хочу быть один.» Вы целуетесь.","Зейн":"Зейн притягивает тебя. «Я счастлив.» Вы обнимаетесь.","Люциан":"Люциан у окна. «Я боялся...» Ты берёшь его за руку. «Ты — мой.»"};
-        const events = [{name:"Тёмные пещеры",bg:IMG.bgCave,intro:"Глубоко под землёй...",mid:"Пещерный Голем!",victory:"Голем повержен!",enemy:{name:"Пещерный Голем",hp:1200,atk:120}},{name:"Берега морей",bg:IMG.bgSea,intro:"Бескрайний океан...",mid:"Водные Духи!",victory:"Духи развеяны!",enemy:{name:"Водные Духи",hp:1300,atk:130}},{name:"Тёмный лес",bg:IMG.bgForest,intro:"Древний лес...",mid:"Оборотни!",victory:"Оборотни повержены!",enemy:{name:"Оборотни",hp:1400,atk:140}}];
+
+        const monsterData = [
+            {name:"Слизень",hp:40,atk:8,coins:8,img:IMG.slime},{name:"Гоблин",hp:55,atk:12,coins:12,img:IMG.goblin},
+            {name:"Теневой волк",hp:70,atk:16,coins:15,img:IMG.wolf},{name:"Демон",hp:90,atk:20,coins:20,img:IMG.demon}
+        ];
+        const eliteData = [
+            {name:"Король Слизней",hp:500,atk:70,coins:30,img:IMG.kingSlime},{name:"Вождь Гоблинов",hp:650,atk:85,coins:35,img:IMG.goblinChief},
+            {name:"Альфа-Волк",hp:800,atk:100,coins:40,img:IMG.alphaWolf},{name:"Архидемон",hp:1000,atk:120,coins:50,img:IMG.archdemon}
+        ];
+        const bossData = {
+            "Кайрос":{hp:5000,atk:150,img:IMG.kairos},"Зейн":{hp:6000,atk:170,img:IMG.zein},"Люциан":{hp:4500,atk:140,img:IMG.lucian}
+        };
+        const locations = [
+            {name:"Лес Теней",bg:IMG.bgShadowForest,monster:{name:"Теневой Вепрь",hp:300,atk:50,coins:40,img:IMG.monsterBoar}},
+            {name:"Горный Перевал",bg:IMG.bgMountain,monster:{name:"Каменный Страж",hp:400,atk:60,coins:50,img:IMG.monsterGolem}},
+            {name:"Берег Забвения",bg:IMG.bgShore,monster:{name:"Глубинный Утопленник",hp:350,atk:55,coins:45,img:IMG.monsterDrowned}},
+            {name:"Заброшенный Храм",bg:IMG.bgTemple,monster:{name:"Древний Хранитель",hp:450,atk:65,coins:55,img:IMG.monsterGuardian}}
+        ];
+        const giftData = {
+            "Люциан": [{img:IMG.bouquet,name:"Букет"},{img:IMG.clock,name:"Часы"}],
+            "Зейн": [{img:IMG.sword,name:"Меч"},{img:IMG.crystal,name:"Кристалл"}],
+            "Кайрос": [{img:IMG.feather,name:"Перо"},{img:IMG.potion,name:"Зелье"}]
+        };
+        const dates = {
+            "Люциан": {1:{t:"Вы гуляете по ледяному саду.\n\n«Я создал эти цветы, думая о ком-то особенном...»",img:IMG.lucian,bg:IMG.bgIceGarden},2:{t:"Люциан приносит мороженое.\n\n«Попробуй... это моё любимое.»",img:IMG.lucian,bg:IMG.bgCozyRoom}},
+            "Зейн": {1:{t:"Прогулка у вулкана. Ты оступаешься — Зейн ловит тебя.\n\n«Осторожно, мелочь!»",img:IMG.zein,bg:IMG.bgVolcanoEdge},2:{t:"Зейн у костра: «Меня никто не любил... пока не встретил тебя.»",img:IMG.zein,bg:IMG.bgCampfire}},
+            "Кайрос": {1:{t:"Вы молча гуляете по тронному залу. Кайрос улыбается.",img:IMG.kairos,bg:IMG.bgKairos},2:{t:"Кайрос прикрывает тебя в бою.\n\n«Ты... стоишь того.»",img:IMG.kairos,bg:IMG.bgBattlefield}}
+        };
+        const finalScenes = {
+            "Кайрос": "Кайрос садится рядом. «Ты завоевал меня. Я не хочу быть один.» Вы целуетесь.",
+            "Зейн": "Зейн притягивает тебя. «Я счастлив.» Вы обнимаетесь.",
+            "Люциан": "Люциан у окна. «Я боялся...» Ты берёшь его за руку. «Ты — мой.»"
+        };
+        const events = [
+            {name:"Тёмные пещеры",bg:IMG.bgCave,intro:"Глубоко под землёй...",mid:"Пещерный Голем!",victory:"Голем повержен!",enemy:{name:"Пещерный Голем",hp:1200,atk:120}},
+            {name:"Берега морей",bg:IMG.bgSea,intro:"Бескрайний океан...",mid:"Водные Духи!",victory:"Духи развеяны!",enemy:{name:"Водные Духи",hp:1300,atk:130}},
+            {name:"Тёмный лес",bg:IMG.bgForest,intro:"Древний лес...",mid:"Оборотни!",victory:"Оборотни повержены!",enemy:{name:"Оборотни",hp:1400,atk:140}}
+        ];
         const bossImages = { "Кайрос": IMG.kairos, "Зейн": IMG.zein, "Люциан": IMG.lucian };
         const bgImages = { "menu": IMG.bgMenu, "monster": IMG.bgMonster, "elite": IMG.bgMonster, "Кайрос": IMG.bgKairos, "Зейн": IMG.bgZein, "Люциан": IMG.bgLucian };
 
@@ -141,6 +178,7 @@
         let isBlocking=false, currentEvent=null, eventBoss=null, currentLocation=null;
         let locDefeated = [false,false,false,false];
 
+        // МУЗЫКА
         let bgMusic = document.getElementById('bgMusic'); let dateMusic = document.getElementById('dateMusic');
         bgMusic.volume = 0.3; dateMusic.volume = 0.4;
         function playBG(){ if(player.musicOn){ bgMusic.currentTime=0; bgMusic.play().catch(e=>{}); } }
@@ -148,13 +186,27 @@
         function stopDate(){ dateMusic.pause(); }
         function toggleMusic(){ player.musicOn=!player.musicOn; if(player.musicOn)playBG(); else{bgMusic.pause();dateMusic.pause();} showSettings(); }
 
+        // ДОСТИЖЕНИЯ
         function checkAchievements(){
-            if(player.level>=20&&!player.achievements.includes('lvl20')){player.achievements.push('lvl20');player.coins+=100;setText('<span class="achieve-popup">🏆 ДОСТИЖЕНИЕ!\nМастер битв (20 уровень)\n+100💰</span>');updateUI();setButtons([{text:'Супер!',action:mainMenu}]);return true;}
-            if(player.cards.length>=3&&!player.achievements.includes('allCards')){player.achievements.push('allCards');player.coins+=100;player.relPoints+=20;setText('<span class="achieve-popup">🏆 ДОСТИЖЕНИЕ!\nКоллекционер (все карты)\n+100💰 +20💕</span>');updateUI();setButtons([{text:'Супер!',action:mainMenu}]);return true;}
-            let allMax=true;for(let b in bosses){if(bosses[b].defeated&&bosses[b].rel<350)allMax=false;if(!bosses[b].defeated)allMax=false;}
-            if(allMax&&player.conquered.length>=3&&!player.achievements.includes('allMax')){player.achievements.push('allMax');player.coins+=200;player.relPoints+=50;setText('<span class="achieve-popup">🏆 ДОСТИЖЕНИЕ!\nПовелитель сердец (все макс)\n+200💰 +50💕</span>');updateUI();setButtons([{text:'Супер!',action:mainMenu}]);return true;}
-            return false;}
-        function showAchievements(){let h='<div class="overlay"><div class="map-title">🏆 ДОСТИЖЕНИЯ</div>';h+='<div style="color:#d0b0d0;font-size:0.8em;text-align:left;max-width:400px;">';h+='<b>Мастер битв:</b> 20 уровень. '+(player.achievements.includes('lvl20')?'✅':'🔒')+'<br><br>';h+='<b>Коллекционер:</b> Все карты. '+(player.achievements.includes('allCards')?'✅':'🔒')+'<br><br>';h+='<b>Повелитель сердец:</b> Все отношения макс. '+(player.achievements.includes('allMax')?'✅':'🔒')+'<br>';h+='</div><br><button class="menu-btn" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
+            if(player.level>=20&&!player.achievements.includes('lvl20')){
+                player.achievements.push('lvl20'); player.coins+=100;
+                setText('<span class="achieve-popup">🏆 ДОСТИЖЕНИЕ!\nМастер битв (20 уровень)\n+100💰</span>');
+                updateUI(); setButtons([{text:'Супер!',action:mainMenu}]); return true;
+            }
+            if(player.cards.length>=3&&!player.achievements.includes('allCards')){
+                player.achievements.push('allCards'); player.coins+=100; player.relPoints+=20;
+                setText('<span class="achieve-popup">🏆 ДОСТИЖЕНИЕ!\nКоллекционер (все карты)\n+100💰 +20💕</span>');
+                updateUI(); setButtons([{text:'Супер!',action:mainMenu}]); return true;
+            }
+            let allMax=true;
+            for(let b in bosses){if(bosses[b].defeated&&bosses[b].rel<350)allMax=false;if(!bosses[b].defeated)allMax=false;}
+            if(allMax&&player.conquered.length>=3&&!player.achievements.includes('allMax')){
+                player.achievements.push('allMax'); player.coins+=200; player.relPoints+=50;
+                setText('<span class="achieve-popup">🏆 ДОСТИЖЕНИЕ!\nПовелитель сердец (все макс)\n+200💰 +50💕</span>');
+                updateUI(); setButtons([{text:'Супер!',action:mainMenu}]); return true;
+            }
+            return false;
+        }
 
         function canFightElite(){return player.level>=11;} function canFightBoss(){return player.level>=21;}
         function canDoLocations(){return player.level>=15;}
@@ -176,11 +228,16 @@
         function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;} function chance(prob){return Math.random()<prob;}
 
         function checkDaily(){
-            let today=new Date().toLocaleDateString('ru-RU');if(player.lastDaily===today)return false;player.lastDaily=today;
+            let today=new Date().toLocaleDateString('ru-RU');
+            if(player.lastDaily===today)return false;
+            player.lastDaily=today;
             if(player.chatDate!==today){player.chatsLeft=5;player.chatDate=today;}
-            let dc=parseInt(localStorage.getItem('blTotalDailyDays')||'0')+1;localStorage.setItem('blTotalDailyDays',dc);let dayInCycle=((dc-1)%10)+1;
+            let dc=parseInt(localStorage.getItem('blTotalDailyDays')||'0')+1;
+            localStorage.setItem('blTotalDailyDays',dc);let dayInCycle=((dc-1)%10)+1;
             player.coins+=50;if(dayInCycle===10)player.relPoints+=50;
-            setText('🎁 БОНУС! День '+dayInCycle+'/10\n+50💰'+(dayInCycle===10?'\n+50💕':''));updateUI();setButtons([{text:'Спасибо!',action:mainMenu}]);return true;}
+            setText('🎁 БОНУС! День '+dayInCycle+'/10\n+50💰'+(dayInCycle===10?'\n+50💕':''));
+            updateUI();setButtons([{text:'Спасибо!',action:mainMenu}]);return true;
+        }
 
         function introScene(){clearJoystick();setBg('menu');hideEnemyBar();updateUI();showImg(IMG.guide);setText('✨ Искра: «Проснись!»');setButtons([{text:'...Где я?',action:introStep2}]);}
         function introStep2(){showImg(IMG.hero);setText('Ты открываешь глаза. Над тобой парит Искра.');addText('✨ Искра: «Ты в Аркании! Только ты можешь всё исправить, '+player.name+'!»');setButtons([{text:'Я хочу домой!',action:introStep3},{text:'Что за бред?!',action:introStep3},{text:'Расскажи.',action:introStep3}]);}
@@ -188,15 +245,31 @@
         function introDone(){player.introDone=true;hidePortrait();setText('✨ Искра: «Осмотрись!»');playBG();setButtons([{text:'Вперёд!',action:mainMenu}]);}
 
         function mainMenu(){
-            clearJoystick();hideEnemyBar();hidePortrait();setBg('menu');enemyHp=0;updateUI();playBG();
+            clearJoystick();hideEnemyBar();hidePortrait();setBg('menu');enemyHp=0;updateUI();
+            playBG();
             if(!player.introDone){introScene();return;}if(checkDaily())return;if(checkAchievements())return;
             setText('✨ Искра: «Куда, '+player.name+'?»');
+            // ЛЕВАЯ КОЛОНКА — ЭМОДЗИ
             let l='<div class="side-icons"><button class="circle-icon" onclick="showSettings()">⚙️</button><button class="circle-icon" onclick="showBook()">📖</button><button class="circle-icon" onclick="showLevels()">📌</button><button class="circle-icon" onclick="shop()">🏪</button></div>';
+            // ПРАВАЯ КОЛОНКА — ЭМОДЗИ
             let r='<div class="side-icons"><button class="circle-icon" onclick="chooseRel()">💕</button><button class="circle-icon" onclick="openChest()">🗝️</button>'+ (canDoEvents()?'<button class="circle-icon" onclick="chooseEventLocation()">⚔️</button>':'<button class="circle-icon locked">⚔️</button>')+'<button class="circle-icon" onclick="showRealMap()">🗺️</button></div>';
             let c='<div class="center-area">'+(player.favorite&&bossImages[player.favorite]?'<div class="fav-label">⭐ '+player.favorite+' ⭐</div><div class="fav-portrait-large"><img src="'+bossImages[player.favorite]+'" alt=""></div><div class="fav-btn-row"><button class="tiny-btn" onclick="setFav()">🔄</button></div>':'<div class="fav-empty">⭐<br>ПОБЕДИ БОССА</div>')+'<div style="display:flex;gap:4px;margin-top:6px;"><button class="menu-btn" onclick="startMonster()">⚔️</button>'+ (canFightElite()?'<button class="menu-btn" onclick="startElite()">💀</button>':'')+ (canFightBoss()?'<button class="menu-btn" onclick="chooseBoss()">👑</button>':'')+'</div><button class="menu-btn" style="margin-top:4px;" onclick="newGameConfirm()">🆕 Новая игра</button></div>';
             setButtonsHTML('<div class="main-layout">'+l+c+r+'</div>');}
 
-        function showTutorial(){let h='<div class="overlay"><div class="map-title">📖 ОБУЧЕНИЕ</div>';h+='<div style="color:#d0b0d0;font-size:0.7em;text-align:left;max-width:400px;">';h+='<b>⚔️ Битвы:</b> Джойстик — Атака (вверх), Сильная атака (вниз), Щит (центр), Лечение (вправо), Побег (влево).<br><br>';h+='<b>🗺️ Карта:</b> Исследуйте 4 локации, сражайтесь с боссами локаций, находите ключи.<br><br>';h+='<b>🔑 Ключи:</b> Открывайте сундуки и получайте карты боссов.<br><br>';h+='<b>💕 Отношения:</b> Разговаривайте, дарите подарки, ходите на свидания.<br><br>';h+='<b>⚔️ События:</b> Доступны с боссом 2+ уровня отношений.<br><br>';h+='<b>🏆 Достижения:</b> 20 ур., все карты, все отношения макс.<br><br>';h+='<b>💾 Сохранения:</b> В настройках. 3 слота.<br><br>';h+='<b>🎵 Музыка:</b> Вкл/выкл в настройках.';h+='</div><br><button class="menu-btn" onclick="showSettings()">Назад</button></div>';setButtonsHTML(h);}
+        // ОБУЧЕНИЕ
+        function showTutorial(){
+            let h='<div class="overlay"><div class="map-title">📖 ОБУЧЕНИЕ</div>';
+            h+='<div style="color:#d0b0d0;font-size:0.7em;text-align:left;max-width:400px;">';
+            h+='<b>⚔️ Битвы:</b> Джойстик — Атака (вверх), Сильная атака (вниз), Щит (центр), Лечение (вправо), Побег (влево).<br><br>';
+            h+='<b>🗺️ Карта:</b> Исследуйте 4 локации, сражайтесь с боссами локаций, находите ключи.<br><br>';
+            h+='<b>🔑 Ключи:</b> Открывайте сундуки и получайте карты боссов.<br><br>';
+            h+='<b>💕 Отношения:</b> Разговаривайте, дарите подарки, ходите на свидания.<br><br>';
+            h+='<b>⚔️ События:</b> Доступны с боссом 2+ уровня отношений.<br><br>';
+            h+='<b>🏆 Достижения:</b> 20 ур., все карты, все отношения макс.<br><br>';
+            h+='<b>💾 Сохранения:</b> В настройках. 3 слота.<br><br>';
+            h+='<b>🎵 Музыка:</b> Вкл/выкл в настройках.';
+            h+='</div><br><button class="menu-btn" onclick="showSettings()">Назад</button></div>';
+            setButtonsHTML(h);}
 
         function showRealMap(){clearJoystick();hidePortrait();if(!canDoLocations()){setText('🔒 Локации откроются на 15 уровне!');setButtons([{text:'Назад',action:mainMenu}]);return;}let h='<div class="overlay"><div class="map-title">🗺️ КАРТА</div><div class="map-locations">';locations.forEach((loc,i)=>{h+='<div class="map-location" onclick="exploreLocation('+i+')"><img src="'+loc.bg+'" alt=""><div class="loc-name">'+loc.name+'</div></div>';});h+='</div><button class="menu-btn" style="margin-top:8px;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
         function exploreLocation(i){let loc=locations[i];currentLocation=i;setBgDirect(loc.bg);showImg(IMG.guide);setText('🗺️ '+loc.name+'\n\n✨ Искра: «Идём!»');setButtons([{text:'«Вперёд!»',action:()=>locationEncounter(i)}]);}
@@ -212,7 +285,7 @@
         function locationWin(i){let loc=locations[i];let m=loc.monster;addText('🎉 ПОБЕДА!');addWin();player.coins+=m.coins;addText('💰 +'+m.coins);locDefeated[i]=true;if(!defeatedMonsters.includes(m.name))defeatedMonsters.push(m.name);if(chance(0.4)&&player.cards.length<3){player.keys++;addText('<span class="key-notify">✨ НАЙДЕН КЛЮЧ! ✨</span>');}clearJoystick();hideEnemyBar();hidePortrait();enemyHp=0;updateUI();setBgDirect(loc.bg);showImg(IMG.guide);setText('🎉 ЛОКАЦИЯ ПРОЙДЕНА!\n\n'+loc.name+' очищена!');setButtons([{text:'На карту',action:showRealMap}]);}
 
         function showLevels(){clearJoystick();let h='<div class="overlay"><div class="map-title">📌 УРОВНИ</div>';h+='<div class="map-section-label">Боссы (21-30)</div>';for(let i=30;i>=21;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<div class="map-section-label">Элита (11-20)</div>';for(let i=20;i>=11;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<div class="map-section-label">Монстры (1-10)</div>';for(let i=10;i>=1;i--){let d=i<=player.level;h+='<div class="map-level-row"><div class="map-level-num'+(d?' done':'')+'">'+i+'</div><div class="map-level-info">'+(d?'✅':'🔒')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);setTimeout(()=>{let o=document.querySelector('.overlay');if(o)o.scrollTop=o.scrollHeight;},100);}
-        function showSettings(){clearJoystick();hidePortrait();setBg('menu');let h='<div class="overlay"><div class="map-title">⚙️ НАСТРОЙКИ</div>';h+='<br><button class="menu-btn" onclick="toggleMusic()">🎵 Музыка: '+(player.musicOn?'ВКЛ':'ВЫКЛ')+'</button>';h+='<button class="menu-btn" onclick="showTutorial()">📖 Обучение</button>';h+='<button class="menu-btn" onclick="showAchievements()">🏆 Достижения</button>';h+='<button class="menu-btn" onclick="stats()">📊 Статистика</button><button class="menu-btn" onclick="saveMenu()">💾 Сохранить</button><button class="menu-btn" onclick="loadMenu()">📂 Загрузить</button><br><button class="menu-btn" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
+        function showSettings(){clearJoystick();hidePortrait();setBg('menu');let h='<div class="overlay"><div class="map-title">⚙️ НАСТРОЙКИ</div>';h+='<br><button class="menu-btn" onclick="toggleMusic()">🎵 Музыка: '+(player.musicOn?'ВКЛ':'ВЫКЛ')+'</button>';h+='<button class="menu-btn" onclick="showTutorial()">📖 Обучение</button>';h+='<button class="menu-btn" onclick="stats()">📊 Статистика</button><button class="menu-btn" onclick="saveMenu()">💾 Сохранить</button><button class="menu-btn" onclick="loadMenu()">📂 Загрузить</button><br><button class="menu-btn" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
         function showBook(){clearJoystick();let h='<div class="overlay"><div style="color:#c080c0;">📖 БЕСТИАРИЙ</div>';h+='<div class="map-section-label">Монстры</div>';monsterData.forEach(m=>{let k=defeatedMonsters.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk:'Победите')+'</div></div>';});h+='<div class="map-section-label">Боссы локаций</div>';locations.forEach(loc=>{let m=loc.monster;let k=defeatedMonsters.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk+'<br>📍'+loc.name:'Победите')+'</div></div>';});h+='<div class="map-section-label">Элита</div>';eliteData.forEach(m=>{let k=defeatedElites.includes(m.name);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img"><div class="book-info"><h4>'+(k?m.name:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk:'Победите')+'</div></div>';});h+='<div class="map-section-label">Боссы</div>';for(let n in bossData){let m=bossData[n],k=defeatedBosses.includes(n);h+='<div class="book-entry'+(k?'':' locked')+'"><img src="'+m.img+'" class="book-img"><div class="book-info"><h4>'+(k?n:'???')+'</h4>'+(k?'HP:'+m.hp+' | Атк:'+m.atk:'Победите')+'</div></div>';}h+='<button class="menu-btn" style="margin:8px 0;" onclick="mainMenu()">Назад</button></div>';setButtonsHTML(h);}
         function setFav(){let c=player.conquered;if(c.length===0)return;let b=c.map(x=>({text:x,action:()=>{player.favorite=x;mainMenu();}}));b.push({text:'Убрать',action:()=>{player.favorite=null;mainMenu();}});setText('Выбери:');setButtons(b);}
         function openChest(){clearJoystick();if(player.keys<=0){setText('Нет ключей!');setButtons([{text:'Назад',action:mainMenu}]);return;}let av=['Кайрос','Зейн','Люциан'].filter(b=>!player.cards.includes(b));if(av.length===0){setText('Все карты открыты!');setButtons([{text:'Назад',action:mainMenu}]);return;}setBg('menu');document.getElementById('portraitArea').innerHTML='<div class="chest-container"><img src="'+IMG.chest+'" alt=""></div>';setText('🗝️ Открыть сундук? Ключей: '+player.keys);setButtons([{text:'🔓 Открыть!',action:()=>chestOpen(av)},{text:'↩️ Назад',action:mainMenu}]);}
@@ -232,6 +305,7 @@
         function startBattle(n,hp,atk,type,cr,img){hideEnemyBar();hidePortrait();isBlocking=false;enemyName=n;enemyHp=hp;enemyMaxHp=hp;enemyAttack=atk;battleType=type;updateEnemyBar();if(img)showImg(img);setBg(type==='boss'?n:(type==='elite'?'elite':'monster'));setText((type==='boss'?'👑 ':(type==='elite'?'💀 ':'⚔️ '))+n);joy(cr);}
         function startMonster(){let m=monsterData[Math.floor(Math.random()*4)];startBattle(m.name,m.hp,m.atk,'monster',m.coins,m.img);}
         function startElite(){if(!canFightElite()){setText('🔒 11 ур.');setButtons([{text:'Назад',action:mainMenu}]);return;}let m=eliteData[Math.floor(Math.random()*4)];startBattle(m.name,m.hp,m.atk,'elite',m.coins,m.img);}
+        // НОВЫЙ ДЖОЙСТИК
         function joy(cr){updateUI();updateEnemyBar();let h='<div class="joystick-container"><div class="joy-empty"></div><button class="joy-btn" onclick="atk('+cr+')">⚔️</button><div class="joy-empty"></div>';h+='<button class="joy-btn" onclick="flee()">🏃</button><button class="joy-btn" onclick="block('+cr+')">🛡️</button><button class="joy-btn" onclick="heal('+cr+')">💚</button>';h+='<div class="joy-empty"></div><button class="joy-btn" onclick="satk('+cr+')">💥</button><div class="joy-empty"></div></div>';document.getElementById('joystickArea').innerHTML=h;document.getElementById('buttons').innerHTML='';}
         function atk(cr){let d=Math.max(1,player.attack+rand(-3,5));enemyHp-=d;addText('⚔️ -'+d);updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
         function satk(cr){if(chance(0.7)){let d=Math.max(1,player.attack*2);enemyHp-=d;addText('💥 -'+d);}else{addText('💨 Промах!');}updateEnemyBar();if(enemyHp<=0){win(cr);return;}eturn(cr);}
@@ -258,45 +332,12 @@
         function relFinal(n){playDate();setBg(n);showImg(bossImages[n]);setText('🌙 ФИНАЛЬНАЯ СЦЕНА\n\n'+finalScenes[n]);setButtons([{text:'❤️',action:()=>{stopDate();playBG();relMenu(n);}}]);checkAchievements();}
         function shop(){clearJoystick();setBg('menu');setText('🏪 | 💰'+player.coins);setButtons([{text:'🧪 +50 HP (80💰)',action:()=>{if(player.coins>=80){player.coins-=80;player.hp=Math.min(player.maxHp,player.hp+50);}shop();}},{text:'⚗️ +10 Атк (120💰)',action:()=>{if(player.coins>=120){player.coins-=120;player.attack+=10;}shop();}},{text:'💕 +20 очков (100💰)',action:()=>{if(player.coins>=100){player.coins-=100;player.relPoints+=20;}shop();}},{text:'Назад',action:mainMenu}]);}
         function stats(){clearJoystick();setBg('menu');let m='📊 СТАТЫ\nУр.'+player.level+' | HP:'+player.maxHp+' | Атк:'+player.attack+'\n💰'+player.coins+' | 💕'+player.relPoints+' | 🔑'+player.keys+'\n🏆 Достижений: '+player.achievements.length+'/3\nЛокаций: '+locDefeated.filter(x=>x).length+'/4\n\n';if(player.conquered.length>0){m+='👑 БОССЫ:\n';player.conquered.forEach(b=>{m+=b+': '+bosses[b].rel+'/350\n';});}setText(m);setButtons([{text:'Назад',action:mainMenu}]);}
-
-        // ========== СОХРАНЕНИЯ ==========
-        function getSaves(){try{return JSON.parse(localStorage.getItem('blFantasySaves')||'{}');}catch(e){return{};}}
+        function getSaves(){let s=localStorage.getItem('blFantasySaves');if(!s)return{};try{return JSON.parse(s);}catch(e){return{};}}
         function saveSaves(s){try{localStorage.setItem('blFantasySaves',JSON.stringify(s));}catch(e){}}
         function saveMenu(){clearJoystick();let s=getSaves(),h='💾 СОХРАНИТЬ<br><br>';for(let i=1;i<=3;i++)h+='<button class="save-slot-btn" onclick="saveSlot('+i+')">Слот '+i+': '+(s['slot'+i]?s['slot'+i].name:'Пусто')+'</button>';h+='<br><button class="menu-btn" onclick="showSettings()">Назад</button>';setText(h);setButtonsHTML('');}
         function saveSlot(n){let nm=prompt('Название:','Слот '+n);if(!nm)return;let s=getSaves();s['slot'+n]={name:nm,player:JSON.parse(JSON.stringify(player)),bosses:JSON.parse(JSON.stringify(bosses)),dM:[...defeatedMonsters],dE:[...defeatedElites],dB:[...defeatedBosses],locDefeated:[...locDefeated]};saveSaves(s);setText('💾 '+nm);setButtons([{text:'OK',action:mainMenu}]);}
         function loadMenu(){clearJoystick();let s=getSaves(),h='📂 ЗАГРУЗИТЬ<br><br>',a=false;for(let i=1;i<=3;i++){if(s['slot'+i]){a=true;h+='<button class="save-slot-btn" onclick="loadSlot('+i+')">Слот '+i+': '+s['slot'+i].name+'</button>';}else h+='<div class="save-slot-btn" style="color:#504050;">Слот '+i+': Пусто</div>';}if(!a)h+='<br>Нет сохранений!';h+='<br><button class="menu-btn" onclick="showSettings()">Назад</button>';setText(h);setButtonsHTML('');}
-        function loadSlot(n){
-    let raw = localStorage.getItem('blFantasySaves');
-    if(!raw){ setText('Нет сохранений!'); return; }
-    let saves = JSON.parse(raw);
-    let s = saves['slot'+n];
-    if(!s){ setText('Слот пуст!'); setButtons([{text:'Назад',action:loadMenu}]); return; }
-    
-    // Восстанавливаем всё
-    player = s.player;
-    bosses = s.bosses;
-    defeatedMonsters = s.dM || [];
-    defeatedElites = s.dE || [];
-    defeatedBosses = s.dB || [];
-    locDefeated = s.locDefeated || [false,false,false,false];
-    player.introDone = true;
-    
-    // Сброс боя
-    enemyHp = 0;
-    currentBoss = null;
-    currentEvent = null;
-    isBlocking = false;
-    
-    // Переход в меню
-    hideEnemyBar();
-    hidePortrait();
-    clearJoystick();
-    setBg('menu');
-    updateUI();
-    
-    // Прямой вызов
-    mainMenu();
-}
+        function loadSlot(n){let s=getSaves()['slot'+n];if(!s){setText('Слот пуст!');return;}player=JSON.parse(JSON.stringify(s.player));bosses=JSON.parse(JSON.stringify(s.bosses));defeatedMonsters=(s.dM||[]).slice();defeatedElites=(s.dE||[]).slice();defeatedBosses=(s.dB||[]).slice();locDefeated=(s.locDefeated||[false,false,false,false]).slice();player.introDone=true;enemyHp=0;hideEnemyBar();hidePortrait();clearJoystick();setBg('menu');updateUI();setText('📂 '+s.name+' загружено!');setButtons([{text:'Играть!',action:mainMenu}]);}
         function newGameConfirm(){clearJoystick();setText('⚠️ Начать новую игру?');setButtons([{text:'✅ Да',action:newGame},{text:'❌ Нет',action:mainMenu}]);}
         function start(){clearJoystick();let s=getSaves(),has=Object.keys(s).length>0;setBg('menu');updateUI();if(has){setText('📂 Сохранения найдены.');setButtons([{text:'📂 Загрузить',action:loadMenu},{text:'🆕 Новая',action:newGameConfirm}]);}else{setText('🔥 BL ФЕНТЕЗИ 🔥');setButtons([{text:'Начать',action:newGame}]);}}
         function newGame(){player={name:prompt('Имя:','Герой')||'Герой',level:1,wins:0,maxHp:100,hp:100,attack:15,defense:8,coins:100,relPoints:0,keys:0,cards:[],conquered:[],favorite:null,introDone:false,lastDaily:null,sparkMet:[],chatDate:null,chatsLeft:5,musicOn:true,achievements:[]};bosses={"Кайрос":{defeated:false,rel:0,dateCount:0},"Зейн":{defeated:false,rel:0,dateCount:0},"Люциан":{defeated:false,rel:0,dateCount:0}};defeatedMonsters=[];defeatedElites=[];defeatedBosses=[];locDefeated=[false,false,false,false];setText('⚡ '+player.name+', добро пожаловать!');updateUI();setButtons([{text:'Вперёд!',action:()=>{player.introDone?mainMenu():introScene();}}]);}
